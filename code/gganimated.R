@@ -10,12 +10,17 @@ library("gganimate")
 library("gapminder")
 
 
+# I break plots down into three sections:
+# The main ggplot
+# the plot that receives animations
+# the thing that gets animation
+
 # gapminder ----
 data("gapminder")
 glimpse(gapminder)
 range(gapminder$pop)
 
-gap_1 <- gapminder %>%
+gap_plot <- gapminder %>%
   ggplot(aes(x = log(lifeExp), y = log(gdpPercap), color = continent)) +
   geom_point(aes(size = pop)) +
   theme_minimal() +
@@ -23,16 +28,37 @@ gap_1 <- gapminder %>%
   theme(panel.grid = element_blank(),
         panel.ontop = TRUE,
         legend.position = "none")
-gap_1
 
-gap_anim <- gap_1 +
+
+gap_1 <- gap_plot +
   transition_time(year) +
   ggtitle("Year: {frame_time}")
 
-gap_animated <- animate(gap_anim)
-
-gap_animated
+gap_1_anim <- animate(gap_1)
+gap_1_anim
 # anim_save(filename = "output/lgpd_lifeExp.gif", animation = gap_animated)
+
+
+# Adding wake
+gap_2 <- gap_plot +
+  transition_time(year) +
+  ggtitle("Year: {frame_time}") +
+  shadow_wake(wake_length = 0.1)
+
+gap_2_anim <- animate(gap_2)
+gap_2_anim
+
+
+# This shows a prevous n of time steps
+gap_3 <- gap_plot +
+  transition_time(year) +
+  ggtitle("Year: {frame_time}") +
+  shadow_trail(max_frames = 2)
+
+gap_3_anim <- animate(gap_3)
+gap_3_anim
+
+
 
 
 # diamonds ----
