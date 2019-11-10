@@ -1,0 +1,214 @@
+---
+title: "`gganimate`"
+author: "Chris Hamm"
+date: "`r Sys.Date()`"
+output: 
+ # pdf_document:
+ #   toc: true
+ #   number_sections: true
+ #   fig_caption: yes
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 3
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
+options(dplyr.width = Inf)
+```
+
+# Introduction
+
+This tutorial goes through the fundamentals of the `gganimate` pacakge. This is an intermediate level workshop and assumes that learners are familiar with the "grammar of graphics" as implemented in `ggplot2`.
+
+`gganimate` creates animated figures by transitioning plots through different "states."
+
+The key argument is the `transition` function.
+
+
+We'll start with a few `R` preliminaries
+
+## Preliminaries
+
+```{r preliminaries, echo = TRUE}
+set.seed(923741)
+
+library("tidyverse")
+library("gganimate")
+library("gapminder")
+```
+
+
+# `transition_states()`
+
+`transition_states()` works with discrete data.
+
+Goal: We want to create an animate figure which shows the `Petal.Length` and `Petal.Width` of the `iris` data set.
+
+The first step to create an animated figure is to creat the static `ggplot` image. This will contain "all" the data to be plotted and will not look the same as the animated figure. 
+
+## Load data
+```{r irisData}
+data(iris) # load the iris data
+glimpse(iris) # view the data
+```
+
+
+## Static plot
+Now create the static plot. Add any plot aesthetics at this point.
+```{r irisStatic}
+iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length, group = Species, color = Species)) +
+  geom_point(size = 5, alpha = 0.75)
+```
+
+I like to build my plots step-by-step, so I save them as objects once I get them looking as I want.
+
+```{r irisSaved}
+iris_plot <- iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length, group = Species, color = Species)) +
+  geom_point(size = 5, alpha = 0.75) +
+  labs(x = "Petal width", y = "Petal length")
+```
+
+
+## animated plot
+
+With the static plot made, let's add some animation with the `transition_states()` function. The user must declare the `state` to transition among.
+
+```{r irisTransition}
+iris_plot + 
+  transition_states(Species)
+```
+
+
+### Four arguments
+`transition_states()` takes **four** arguments:
+
+  - `states` - variable name that contains discrete data
+  - `transition_length` - The relative length of the transition (`default = 1`)
+  - `state_length` - the relative length of the pause between states (`default = 1`)
+  - `wrap` - Should the animate wrap around? (default = `TRUE`) If `TRUE` the last state will be transitioned into the first.
+
+`transition_states(states, transition_length, state_length, wrap = TRUE)`
+
+These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions. 
+
+```{r iris_fineTune}
+iris_plot +
+  transition_states(Species,
+                    transition_length = 0.1, 
+                    state_length = 0.1)
+```
+
+
+# Labels
+We can add labels!
+
+  - **previous_state** - previous variable state
+  - **closest_state** - the current variable state
+  - **next_state** - next variable state
+
+If we are going to add the species name, I'll go ahead and remove the legend since it would duplicate information in the plot.
+
+```{r irisLabs}
+iris_plot <- iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length, group = Species, color = Species)) +
+  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length")
+
+iris_plot +
+  transition_states(Species,
+                    transition_length = 0.1, 
+                    state_length = 0.1) +
+  labs(title = "Iris {closest_state}")
+```
+
+# Easing
+
+`gganimate` calculates intermediate ("tween") values to transition among states. You can decide how this process occurs, which is called *easing* and can be adjusted with `ease_aes()`.
+
+`ease_aes('linear')`:
+
+  - **quadratic**: {^2} # add LaTeX here
+  - **cubic**: ^3
+  - **quartic**: ^4
+  - **quintic**: ^5
+  - **sine**: a *sine* function
+  - **circular**: `r 1+2`
+  - **exponential** - ^e
+  - **elastic** - elastic release of energy
+  - **back** - pullback and release
+  - **bounce** - bouncing ball
+    - *methods*
+      - **-in** - function applied "as-is"
+      - **-out** - function applied in reverse
+      - **-in-out** - first half applied "as-is", second half is reversed.
+      
+
+'cubic-in-out`
+```{r irisEasing}
+irisAnimation <- iris_plot +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1) +
+  labs(title = "Iris {closest_state}")
+
+irisAnimation +
+  ease_aes('cubic-in-out')
+```
+
+
+'bounce-out'
+```{r irisBounceOut}
+irisAnimation +
+  ease_aes(y = "bounce-out")
+```
+
+
+# `enter_` & `exit_`
+
+A few of the fine tuning functions work for both `transition_states()` and `transition_time()`. 
+
+Specifically we will deal with `enter_` and `exit_`. Each can be paired with a variety of behaviors such as:
+
+  - `appear` / `disappear` - make elements appear and disappear at the start or end of their transition.
+  - `fade` - set `alpha` value to make elements fade in / fade out during transitions.
+  - `grow` / `shrink` - set elements to make them grow into or shrink out during their transition
+  - `recolor` - gradually change color or fill elements from their defined color to new color
+  - `fly` - set `x` and `y` positions where all elements enter from / exit to
+  - `drift` - modify the position of an element by a specified amount
+
+Each has additional customizable parameters
+
+
+
+
+
+
+
+# `transition_time()`
+
+
+
+
+
+
+# `boxplots
+
+
+
+# Default is appear/disappear
+anim <- ggplot(mtcars, aes(factor(gear), mpg)) +
+  geom_boxplot() +
+  transition_states(gear, 2, 1)
+# Fade-in, fly-out
+anim1 <- anim +
+  enter_fade() +
+  exit_fly(x_loc = 7, y_loc = 40)
+# Enter and exit accumulates
+anim2 <- anim +
+  enter_fade() + enter_grow() +
+  exit_fly(x_loc = 7, y_loc = 40) + exit_recolour(fill = 'forestgreen')
