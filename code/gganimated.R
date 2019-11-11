@@ -27,7 +27,6 @@ gap_plot <- gapminder %>%
   labs(y = "GDP PerCap", x = "Life Expectancy") +
   scale_y_continuous(breaks = seq(45, 85, 5), labels = as.character(seq(45, 85, 5))) +
   scale_x_continuous(breaks = c(1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000), labels = c("1000", "2000", "4000", "8000", "16K", "32K", "64K", "128K")) +
-  coord_cartesian(x = )
   theme(panel.grid = element_blank(),
         panel.ontop = TRUE,
         legend.position = "none")

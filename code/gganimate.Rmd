@@ -25,7 +25,9 @@ This tutorial goes through the fundamentals of the `gganimate` pacakge. This is 
 
 `gganimate` creates animated figures by transitioning plots through different "states."
 
-The key argument is the `transition` function.
+The key is to think about what you want your plot to do and then iteratively build your animation.
+
+The key argument in `ggaminate` is the `transition` function.
 
 
 We'll start with a few `R` preliminaries
@@ -60,16 +62,18 @@ glimpse(iris) # view the data
 Now create the static plot. Add any plot aesthetics at this point.
 ```{r irisStatic}
 iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length, group = Species, color = Species)) +
+  ggplot(aes(x = Petal.Width, y= Petal.Length, show.legend = FALSE)) +
   geom_point(size = 5, alpha = 0.75)
 ```
 
-I like to build my plots step-by-step, so I save them as objects once I get them looking as I want.
+I like to build my plots step-by-step, so I save them as objects once I get them looking as I want. 
+
+Adding colors will force the plot to be "choppy."
 
 ```{r irisSaved}
 iris_plot <- iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length, group = Species, color = Species)) +
-  geom_point(size = 5, alpha = 0.75) +
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
   labs(x = "Petal width", y = "Petal length")
 ```
 
@@ -79,8 +83,9 @@ iris_plot <- iris %>%
 With the static plot made, let's add some animation with the `transition_states()` function. The user must declare the `state` to transition among.
 
 ```{r irisTransition}
-iris_plot + 
+iris_anim <- iris_plot + 
   transition_states(Species)
+iris_anim
 ```
 
 
@@ -97,10 +102,11 @@ iris_plot +
 These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions. 
 
 ```{r iris_fineTune}
-iris_plot +
+iris_anim <-  iris_plot +
   transition_states(Species,
-                    transition_length = 0.1, 
-                    state_length = 0.1)
+                    transition_length = 2, 
+                    state_length = 1)
+iris_anim
 ```
 
 
@@ -115,14 +121,14 @@ If we are going to add the species name, I'll go ahead and remove the legend sin
 
 ```{r irisLabs}
 iris_plot <- iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length, group = Species, color = Species)) +
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
   geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
   labs(x = "Petal width", y = "Petal length")
 
 iris_plot +
   transition_states(Species,
-                    transition_length = 0.1, 
-                    state_length = 0.1) +
+                    transition_length = 2, 
+                    state_length = 1) +
   labs(title = "Iris {closest_state}")
 ```
 
@@ -132,16 +138,16 @@ iris_plot +
 
 `ease_aes('linear')`:
 
-  - **quadratic**: {^2} # add LaTeX here
-  - **cubic**: ^3
-  - **quartic**: ^4
-  - **quintic**: ^5
-  - **sine**: a *sine* function
-  - **circular**: `r 1+2`
-  - **exponential** - ^e
-  - **elastic** - elastic release of energy
-  - **back** - pullback and release
-  - **bounce** - bouncing ball
+  - **quadratic**: \( x^2 \) 
+  - **cubic**: \( x^3 \)
+  - **quartic**: \( x^4 \)
+  - **quintic**: \( x^5 \)
+  - **sine**: \( \sin(x) \)
+  - **circular**: \( \frac{\pi}{2} \)
+  - **exponential**: \( x^e \)
+  - **elastic**: elastic release of energy
+  - **back**: pullback and release
+  - **bounce**: bouncing ball
     - *methods*
       - **-in** - function applied "as-is"
       - **-out** - function applied in reverse
@@ -181,34 +187,277 @@ Specifically we will deal with `enter_` and `exit_`. Each can be paired with a v
   - `fly` - set `x` and `y` positions where all elements enter from / exit to
   - `drift` - modify the position of an element by a specified amount
 
-Each has additional customizable parameters
+Each has additional customizable parameters. 
 
 
+A bit abrupt to plot `color = Species` as such.
+
+## Colors
+```{r irisColors}
+iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(aes(color = Species), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1,
+                    ) +
+  labs(title = "Iris {closest_state}")
+```
 
 
+Smooth the transition between distinct states with `enter_fade()` and `exit_fade()`.
 
+```{r irisColors2}
+iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(aes(color = Species), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1,
+                    ) +
+  labs(title = "Iris {closest_state}") +
+  enter_fade() +
+  exit_fade()
+```
+
+
+Or, set them with one group with `1L`:
+```{r irisSmoothColor}
+iris %>% 
+ggplot(aes(x = Petal.Width, y = Petal.Length)) + 
+  geom_point(aes(colour = Species, group = 1L), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2,
+                    state_length = 1) +
+  labs(title = "Iris {closest_state}")
+```
 
 
 # `transition_time()`
+Let's use with the `gapminder` data and try to recreate the Rosling plots.
+
+```{r gapMinder}
+data(gapminder)
+glimpse(gapminder)
+```
 
 
+```{r gapminderStatic}
+gap_plot <- gapminder %>% 
+  ggplot(
+    aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(show.legend = FALSE, alpha = 0.7) +
+  scale_color_viridis_d() +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  labs(x = "GDP per capita", y = "Life expectency")
+gap_plot
+```
 
 
+```{r gapTime}
+gap_plot +
+transition_time(year) +
+  labs(title = "Year: {frame_time}")
+```
 
 
-# `boxplots
+## `facet_wrap()`
+```{r gapWrap}
+gap_plot +
+facet_wrap(~continent) +
+  transition_time(year) + 
+  labs(title = "Year: {frame_time}")
+```
 
 
+## `view_follow()`
 
-# Default is appear/disappear
-anim <- ggplot(mtcars, aes(factor(gear), mpg)) +
+`view_follow(fixed_x = FALSE, fixed_y = FALSE, exclude_layer = NULL, aspect_ratio = 1)`:
+
+  - `fixed_x`: `
+  - `fixed_y`:
+  - `exclude`: a layer / indes
+  - `aspect_ratio`: overrides any `fixed_`
+
+I personally do not care for this in most situations I have encountered. If you find a good use case please let me know.
+
+```{r gapFollow}
+gap_plot + 
+  transition_time(year) +
+  labs(title = "Year: {frame_time}") +
+  view_follow(fixed_y = TRUE)
+```
+
+
+## `shadow_wake()`
+
+`shadow_wake(wake_length, size = TRUE, alpha = TRUE, colour = NULL, fill = NULL, falloff = "cubic-in", wrap = TRUE, exclude_layer = NULL, exclude_phase = c("enter", "exit"))`
+
+```{r gapShadow}
+gap_plot +
+transition_time(year) +
+  labs(title = "Year: {frame_time}") +
+  shadow_wake(wake_length = 0.1, alpha = TRUE)
+```
+
+
+# `geom_boxplot()`
+
+Start with our static plot
+```{r boxStatic}
+car_plot <- mtcars %>% 
+  ggplot(aes(x = factor(cyl), y = mpg)) +
   geom_boxplot() +
-  transition_states(gear, 2, 1)
-# Fade-in, fly-out
-anim1 <- anim +
+  labs(y = "MPG", x = "Cylinders")
+car_plot
+```
+
+Now create the animation:
+```{r boxAnim}
+car_plot +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1)
+```
+
+
+Let's set the fade in and out
+```{r boxFade}
+car_plot +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1) +
   enter_fade() +
-  exit_fly(x_loc = 7, y_loc = 40)
-# Enter and exit accumulates
-anim2 <- anim +
-  enter_fade() + enter_grow() +
-  exit_fly(x_loc = 7, y_loc = 40) + exit_recolour(fill = 'forestgreen')
+  labs(title = "Gears: {closest_state}")
+```
+
+
+Multiple effects:
+```{r boxEffects}
+car_plot + 
+  theme_minimal() +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1) +
+  labs(title = "Gears: {closest_state}") +
+  enter_fade() + 
+  enter_grow() +
+  exit_fly(x_loc = 7, y_loc = 40) + 
+  exit_recolour(fill = 'forestgreen')
+```
+
+
+# `geom_line()`
+
+How to create an animated line plot 
+```{r airQuality}
+data(airquality)
+glimpse(airquality)
+range(airquality$Month)
+```
+
+
+Set the static plot:
+```{r airPlot}
+air_plot <- airquality %>% 
+  ggplot(
+    aes(x = Day, y = Temp, group = Month, color = factor(Month))
+  ) +
+  geom_line() +
+  scale_color_viridis_d(name = "Month") +
+  labs(x = "Day of Month", y = "Temperature") +
+  theme(legend.position = "top")
+air_plot
+```
+
+
+Extend lines by day across months
+```{r airAnim}
+air_plot +
+  transition_reveal(Day)
+```
+
+
+Add points to the plot to draw the eye
+```{r airLinePoint}
+air_plot +
+  geom_point() +
+  transition_reveal(Day)
+```
+
+
+# `geom_point()`
+
+Create the static plot
+```{r airPoint}
+air_point <- airquality %>% 
+  ggplot(aes(x = Day, y = Temp, group = Month, color = factor(Month))) +
+  geom_point() +
+  scale_color_viridis_d(name = "Month") +
+  labs(x = "Day of Month", y = "Temperature") +
+  theme(legend.position = "top")
+air_point
+```
+
+
+```{r airWake}
+air_point + 
+  transition_reveal(Day) +
+  shadow_wake(wake_length = 1, alpha = TRUE, size = TRUE)
+```
+
+
+```{r}
+air_point +
+  geom_point(aes(group = seq_along(Day))) +
+  transition_reveal(Day)
+```
+
+
+# `geom_col()`
+
+Summarize the `airquality` data and make a bar chart
+
+```{r airMean}
+mean_temp <- airquality %>% 
+  group_by(Month) %>% 
+  summarize(mTemp = mean(Temp))
+mean_temp
+```
+
+Create the static plto
+```{r meanStatic}
+temp_plot <- mean_temp %>% 
+  ggplot(
+    aes(x = Month, y = mTemp, fill = mTemp)) +
+  geom_col() +
+  scale_fill_distiller(palette = "Reds", direction = 1, name = "Temp") +
+  theme_minimal() +
+  labs(y = "Mean temperature", x = "Month") +
+  theme(
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(color = "white"),
+    panel.ontop = TRUE)
+temp_plot
+```
+
+
+```{r meanAnim}
+temp_plot +
+  transition_states(Month, wrap = FALSE)
+```
+
+
+Add some effects:
+```{r meanEffect}
+temp_plot +
+  transition_states(Month, wrap = FALSE) +
+  shadow_mark() +
+  enter_grow() + 
+  enter_fade()
+```
+
