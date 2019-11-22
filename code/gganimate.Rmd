@@ -32,104 +32,10 @@ The key argument in `ggaminate` is the `transition` function.
 
 We'll start with a few `R` preliminaries
 
-## Preliminaries
-
-```{r preliminaries, echo = TRUE}
-set.seed(923741)
-
-library("tidyverse")
-library("gganimate")
-library("gapminder")
-```
 
 
-# `transition_states()`
-
-`transition_states()` works with discrete data.
-
-Goal: We want to create an animate figure which shows the `Petal.Length` and `Petal.Width` of the `iris` data set.
-
-The first step to create an animated figure is to creat the static `ggplot` image. This will contain "all" the data to be plotted and will not look the same as the animated figure. 
-
-## Load data
-```{r irisData}
-data(iris) # load the iris data
-glimpse(iris) # view the data
-```
 
 
-## Static plot
-Now create the static plot. Add any plot aesthetics at this point.
-```{r irisStatic}
-iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length, show.legend = FALSE)) +
-  geom_point(size = 5, alpha = 0.75)
-```
-
-I like to build my plots step-by-step, so I save them as objects once I get them looking as I want. 
-
-Adding colors will force the plot to be "choppy."
-
-```{r irisSaved}
-iris_plot <- iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
-  labs(x = "Petal width", y = "Petal length")
-```
-
-
-## animated plot
-
-With the static plot made, let's add some animation with the `transition_states()` function. The user must declare the `state` to transition among.
-
-```{r irisTransition}
-iris_anim <- iris_plot + 
-  transition_states(Species)
-iris_anim
-```
-
-
-### Four arguments
-`transition_states()` takes **four** arguments:
-
-  - `states` - variable name that contains discrete data
-  - `transition_length` - The relative length of the transition (`default = 1`)
-  - `state_length` - the relative length of the pause between states (`default = 1`)
-  - `wrap` - Should the animate wrap around? (default = `TRUE`) If `TRUE` the last state will be transitioned into the first.
-
-`transition_states(states, transition_length, state_length, wrap = TRUE)`
-
-These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions. 
-
-```{r iris_fineTune}
-iris_anim <-  iris_plot +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1)
-iris_anim
-```
-
-
-# Labels
-We can add labels!
-
-  - **previous_state** - previous variable state
-  - **closest_state** - the current variable state
-  - **next_state** - next variable state
-
-If we are going to add the species name, I'll go ahead and remove the legend since it would duplicate information in the plot.
-
-```{r irisLabs}
-iris_plot <- iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
-  labs(x = "Petal width", y = "Petal length")
-
-iris_plot +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1) +
-  labs(title = "Iris {closest_state}")
 ```
 
 # Easing

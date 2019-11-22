@@ -1,0 +1,84 @@
+---
+title: "`transition_states()`"
+author: "Chris Hamm"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 3
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
+options(dplyr.width = Inf)
+```
+
+
+## Preliminaries
+
+```{r preliminaries, echo = FALSE}
+set.seed(923741)
+
+library("tidyverse")
+library("gganimate")
+```
+
+
+# `transition_states()`
+
+`transition_states()` works with discrete data.
+
+Goal: We want to create an animate figure which shows the `Petal.Length` and `Petal.Width` of the `iris` data set.
+
+The first step to create an animated figure is to creat the static `ggplot` image. This will contain "all" the data to be plotted and will not look the same as the animated figure. 
+
+## Load data
+```{r irisData, echo = FALSE}
+data(iris) # load the iris data
+```
+
+
+I like to build my plots step-by-step, so I save them as objects once I get them looking as I want. 
+
+Adding colors will force the plot to be "choppy."
+
+```{r irisSaved, echo = FALSE}
+iris_plot <- iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length")
+```
+
+
+## animated plot
+
+With the static plot made, let's add some animation with the `transition_states()` function. The user must declare the `state` to transition among.
+
+```{r irisTransition}
+iris_anim <- iris_plot + 
+  transition_states(Species)
+iris_anim
+```
+
+
+### Four arguments
+`transition_states()` takes **four** arguments:
+
+  - `states` - variable name that contains discrete data
+  - `transition_length` - The relative length of the transition (`default = 1`)
+  - `state_length` - the relative length of the pause between states (`default = 1`)
+  - `wrap` - Should the animate wrap around? (default = `TRUE`) If `TRUE` the last state will be transitioned into the first.
+
+`transition_states(states, transition_length, state_length, wrap = TRUE)`
+
+These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions. 
+
+```{r iris_fineTune}
+iris_anim <-  iris_plot +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1)
+iris_anim
+```
