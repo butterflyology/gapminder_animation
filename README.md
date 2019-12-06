@@ -9,3 +9,4 @@ Commits:
 1. 2019-10-21: Initial commit. Got the Rosling plot for `gapminder` pretty close (needs larger points). Also the `diamonds` plot from Pederson.
 1. 2019-11-10: Creating the `.Rmd` file with the tutorial.
 1. 2019-11-22: Splitting the parts into tabs to reduce file size and improve flow / readability.
+1. 2019-12-06: Started work on creating tabs for each section and adding a footer. Started branch `tabs`. Still need to outline this at a higher level.

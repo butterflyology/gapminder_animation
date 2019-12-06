@@ -8,9 +8,10 @@ output:
  #   number_sections: true
  #   fig_caption: yes
   html_document:
-    toc: TRUE
-    toc_float: TRUE
-    toc_depth: 3
+    css: style.css
+    # toc: TRUE
+    # toc_float: TRUE
+    # toc_depth: 3
 ---
 
 

@@ -4,9 +4,9 @@ author: "Chris Hamm"
 date: "`r Sys.Date()`"
 output: 
   html_document:
-    toc: TRUE
-    toc_float: TRUE
-    toc_depth: 3
+    css: ../misc/style.css
+    #includes:
+    #  after_body: ../misc/footer.html
 ---
 
 
@@ -15,50 +15,56 @@ knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
 options(dplyr.width = Inf)
 ```
 
+# Motivations
+
+Goal: We want to create an animated figure which shows the `Petal.Length` and `Petal.Width` by `Species` using the `iris` data set.
+
+We need to use the `transition_states()` function. `transition_states()` works with discrete data.
+
+The first step to create an animated figure is to creat the static `ggplot` image. This will contain "all" the data to be plotted and will not look the same as the animated figure. 
+
 
 ## Preliminaries
 
-```{r preliminaries, echo = FALSE}
+We'll load the required libraries and data set.
+
+```{r preliminaries, echo = TRUE, message = FALSE}
 set.seed(923741)
 
 library("tidyverse")
 library("gganimate")
-```
-
-
-# `transition_states()`
-
-`transition_states()` works with discrete data.
-
-Goal: We want to create an animate figure which shows the `Petal.Length` and `Petal.Width` of the `iris` data set.
-
-The first step to create an animated figure is to creat the static `ggplot` image. This will contain "all" the data to be plotted and will not look the same as the animated figure. 
-
-## Load data
-```{r irisData, echo = FALSE}
 data(iris) # load the iris data
 ```
 
 
+## Static plot
+
+The first step is to create a static plot that contains the data that you want to present in your animated figure. Keep in mind that this plot may not look identical to the final animated figure becuase it will contain all of the data (without any transitions).
+
 I like to build my plots step-by-step, so I save them as objects once I get them looking as I want. 
 
-Adding colors will force the plot to be "choppy."
 
-```{r irisSaved, echo = FALSE}
+```{r irisSaved, fig.cap = "Static plot of the Iris data set"}
 iris_plot <- iris %>% 
   ggplot(aes(x = Petal.Width, y= Petal.Length)) +
   geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
   labs(x = "Petal width", y = "Petal length")
+
+iris_plot
 ```
+
+Eventually we will want to distinguish `Species` by color, but doing that now will make the animation choppy so I'll show you that after we build the animated figure step-by-step.
+
 
 
 ## animated plot
 
 With the static plot made, let's add some animation with the `transition_states()` function. The user must declare the `state` to transition among.
 
-```{r irisTransition}
+```{r irisTransition, fig.cap = "Figure with smooth animation between `Iris` states"}
 iris_anim <- iris_plot + 
   transition_states(Species)
+
 iris_anim
 ```
 
@@ -75,7 +81,7 @@ iris_anim
 
 These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions. 
 
-```{r iris_fineTune}
+```{r iris_fineTune, fig.cap = "2 second transition between states, 1 second pause at each state"}
 iris_anim <-  iris_plot +
   transition_states(Species,
                     transition_length = 2, 
