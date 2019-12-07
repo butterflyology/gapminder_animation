@@ -1,0 +1,18 @@
+name: "gganimate"
+output_dir: "."
+navbar:
+  title: "gganimate"
+  href: index.html
+  left:
+    - text: "transition_states()"
+      href: transition_states.html
+    - text: "Labels"
+      href: labels.html
+
+
+#  left:
+#    - text: "`transition_states()`"
+#      href: transition_states.html
+#      menu:
+#        - text: "Labels"
+#          href: labels.html
