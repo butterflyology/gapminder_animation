@@ -26,62 +26,25 @@ library("gganimate")
 ```
 
 
-## Load data
 ```{r irisData, echo = FALSE}
 data(iris) # load the iris data
 glimpse(iris) # view the data
 ```
 
 
-## Static plot
-Now create the static plot. Add any plot aesthetics at this point.
-```{r irisStatic, echo = FALSE}
-iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length, show.legend = FALSE)) +
-  geom_point(size = 5, alpha = 0.75)
-```
-
-I like to build my plots step-by-step, so I save them as objects once I get them looking as I want. 
-
-Adding colors will force the plot to be "choppy."
-
-```{r irisSaved, echo = FALSE}
-iris_plot <- iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
-  labs(x = "Petal width", y = "Petal length")
-```
-
-
-## animated plot
-
-With the static plot made, let's add some animation with the `transition_states()` function. The user must declare the `state` to transition among.
-
-```{r irisTransition, echo = FALSE}
-iris_anim <- iris_plot + 
-  transition_states(Species)
-```
-
-
-
-These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions. 
-
-```{r iris_fineTune, echo = FALSE}
-iris_anim <-  iris_plot +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1)
-```
+The animated plot is looking godecent but I think that we can increase the information content on the figure by adding labels to the plot. This is especially important when all the data points are the same color.
 
 
 # Labels
 We can add labels!
 
+Using the `labs()` function after `transition_states()` will add a label to your plot. You can use syntax from the `glue` package to define what you would like to plot. If you want to have the `state` appear on your plot, you can select from three options:
+
   - **previous_state** - previous variable state
   - **closest_state** - the current variable state
   - **next_state** - next variable state
 
-If we are going to add the species name, I'll go ahead and remove the legend since it would duplicate information in the plot.
+Since we are going to add the species name, I'll go ahead and remove the legend since it would duplicate information in the plot.
 
 ```{r irisLabs}
 iris_plot <- iris %>% 
@@ -94,3 +57,7 @@ iris_plot +
                     transition_length = 2, 
                     state_length = 1) +
   labs(title = "Iris {closest_state}")
+```
+
+
+And now we can see the name of the Genus (*Iris*) and species name in the upper left of the animated plot. Notice that the name changes species name when the data points are halfway through the transition to the next state. 

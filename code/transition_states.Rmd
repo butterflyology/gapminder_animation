@@ -16,18 +16,6 @@ knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
 options(dplyr.width = Inf)
 ```
 
-# Motivations
-
-Goal: We want to create an animated figure which shows the `Petal.Length` and `Petal.Width` by `Species` using the `iris` data set.
-
-We need to use the `transition_states()` function. `transition_states()` works with discrete data.
-
-The first step to create an animated figure is to creat the static `ggplot` image. This will contain "all" the data to be plotted and will not look the same as the animated figure. 
-
-
-## Preliminaries
-
-We'll load the required libraries and data set.
 
 ```{r preliminaries, echo = FALSE, message = FALSE}
 set.seed(923741)
@@ -38,27 +26,27 @@ data(iris) # load the iris data
 ```
 
 
-## Static plot
-
-The first step is to create a static plot that contains the data that you want to present in your animated figure. Keep in mind that this plot may not look identical to the final animated figure becuase it will contain all of the data (without any transitions).
-
-I like to build my plots step-by-step, so I save them as objects once I get them looking as I want. 
-
-
-```{r irisSaved, echo = FALSE}
+```{r iris_plot, echo = FALSE}
 iris_plot <- iris %>% 
   ggplot(aes(x = Petal.Width, y= Petal.Length)) +
   geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
   labs(x = "Petal width", y = "Petal length")
+
 ```
 
-Eventually we will want to distinguish `Species` by color, but doing that now will make the animation choppy so I'll show you that after we build the animated figure step-by-step.
+With our static plot in place, let's make it move. 
 
 
+# Motivation
 
-## animated plot
+Goal: We want to create an animated figure which shows the `Petal.Length` and `Petal.Width` by `Species` using the `iris` data set.
 
-With the static plot made, let's add some animation with the `transition_states()` function. The user must declare the `state` to transition among.
+
+# Animated plot
+
+We need to use the `transition_states()` function. `transition_states()` works with discrete data. There are other `transition_` funcions but we'll start here.
+
+At a minimum, you need to tell `transition_states()` which discrete variable you want to tranistion between.
 
 ```{r irisTransition, fig.cap = "Figure with smooth animation between `Iris` states"}
 iris_anim <- iris_plot + 
@@ -67,8 +55,10 @@ iris_anim <- iris_plot +
 iris_anim
 ```
 
+If you think that this is a fairly straight forward plot and doens't seem to contain a lot of information, you are correct. Right now we want to get the individual parts of the plot working and we will add on to it. This way, if something breaks the code, we'll know exactly where the bug was introduced. Eventually we will want to distinguish `Species` by color. But adding `color = S[ecies` to the `ggplot` call will make the animation choppy, so we'll do that later and I'll show you a cleaver way to smooth it out . 
 
-### Four arguments
+
+# Four arguments
 `transition_states()` takes **four** arguments:
 
   - `states` - variable name that contains discrete data
@@ -80,10 +70,29 @@ iris_anim
 
 These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions. 
 
-```{r iris_fineTune, fig.cap = "2 second transition between states, 1 second pause at each state"}
+
+
+```{r iris_fineTune, fig.cap = "2 second transition between states, 1 second pause at each state, wrap = FALSE"}
 iris_anim <-  iris_plot +
   transition_states(Species,
                     transition_length = 2, 
-                    state_length = 1)
+                    state_length = 1,
+                    wrap = FALSE)
 iris_anim
 ```
+
+What if we change the code so that `wrap = TRUE`?
+
+
+```{r iris_fineTune2, fig.cap = "2 second transition between states, 1 second pause at each state, wrap = TRUE"}
+iris_anim <-  iris_plot +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1,
+                    wrap = TRUE)
+iris_anim
+```
+
+Observe how the data points in the animation cycle back  to the start once all the states have been plotted.
+
+Play around with each arguement and see how they alter your figure. 

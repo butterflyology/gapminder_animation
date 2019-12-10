@@ -1,5 +1,5 @@
 ---
-title: "gganimate"
+title: "gganimate "
 author: "Chris Hamm"
 date: "`r Sys.Date()`"
 output: 
@@ -60,6 +60,6 @@ iris_plot <- iris %>%
 iris_plot
 ```
 
-
+Now that we have a static plot containing all the information we want to animate, we can move on to `gganimate` and define the animation with the `transition_states()` function.
 
 
