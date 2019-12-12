@@ -22,7 +22,6 @@ set.seed(923741)
 
 library("tidyverse")
 library("gganimate")
-data(iris) # load the iris data
 ```
 
 

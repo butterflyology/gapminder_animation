@@ -14,7 +14,7 @@
 
 <meta name="date" content="2019-12-12" />
 
-<title>labels &amp; color</title>
+<title>easing</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -365,97 +365,62 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore"><code>labels</code> &amp; color</h1>
+<h1 class="title toc-ignore"><code>easing</code></h1>
 <h4 class="author">Chris Hamm</h4>
 <h4 class="date">2019-12-12</h4>
 
 </div>
 
 
-<p>The animated plot is looking godecent but I think that we can increase the information content on the figure by adding labels to the plot. This is especially important when all the data points are the same color.</p>
-<div id="labels" class="section level1">
-<h1>Labels</h1>
-<p>We can add labels!</p>
-<p>Using the <code>labs()</code> function after <code>transition_states()</code> will add a label to your plot. You can use syntax from the <code>glue</code> package to define what you would like to plot. If you want to have the <code>state</code> appear on your plot, you can select from three options:</p>
+<div id="easing" class="section level1">
+<h1>Easing</h1>
+<p><code>gganimate</code> calculates intermediate (“tween”) values to transition among states. You can decide how this process occurs, which is called <em>easing</em> and can be adjusted with <code>ease_aes()</code>.</p>
+<p><code>ease_aes('linear')</code>:</p>
 <ul>
-<li><strong>previous_state</strong> - previous variable state</li>
-<li><strong>closest_state</strong> - the current variable state</li>
-<li><strong>next_state</strong> - next variable state</li>
+<li><strong>quadratic</strong>: <span class="math inline">\(x^2\)</span></li>
+<li><strong>cubic</strong>: <span class="math inline">\(x^3\)</span></li>
+<li><strong>quartic</strong>: <span class="math inline">\(x^4\)</span></li>
+<li><strong>quintic</strong>: <span class="math inline">\(x^5\)</span></li>
+<li><strong>sine</strong>: <span class="math inline">\(\sin(x)\)</span></li>
+<li><strong>circular</strong>: <span class="math inline">\(\frac{\pi}{2}\)</span></li>
+<li><strong>exponential</strong>: <span class="math inline">\(x^e\)</span></li>
+<li><strong>elastic</strong>: elastic release of energy</li>
+<li><strong>back</strong>: pullback and release</li>
+<li><strong>bounce</strong>: bouncing ball
+<ul>
+<li><em>methods</em>
+<ul>
+<li><strong>-in</strong> - function applied “as-is”</li>
+<li><strong>-out</strong> - function applied in reverse</li>
+<li><strong>-in-out</strong> - first half applied “as-is”, second half is reversed.</li>
+</ul></li>
+</ul></li>
 </ul>
-<p>Since we are going to add the species name, I’ll go ahead and remove the legend since it would duplicate information in the plot.</p>
-<pre class="r"><code>iris_plot &lt;- iris %&gt;% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
-  labs(x = &quot;Petal width&quot;, y = &quot;Petal length&quot;)
-
-iris_plot +
+<div id="cubic-in-out" class="section level2">
+<h2><code>cubic-in-out</code></h2>
+<pre class="r"><code>irisAnimation &lt;- iris_plot +
   transition_states(Species,
                     transition_length = 2, 
                     state_length = 1) +
-  labs(title = &quot;Iris {closest_state}&quot;)</code></pre>
-<p><img src="labels_files/figure-html/irisLabs-1.gif" style="display: block; margin: auto;" /></p>
-<p>And now we can see the name of the Genus (<em>Iris</em>) and species name in the upper left of the animated plot. Notice that the name changes species name when the data points are halfway through the transition to the next state.</p>
-</div>
-<div id="colors" class="section level1">
-<h1>Colors</h1>
-<p>Normally, we would color distinct entities using the <code>color</code> argument inside of <code>aes()</code>. However, that generates some problems for us and makes the transition very abrupt. There is no transition among the groups, just an instantaneous change.</p>
-<pre class="r"><code>iris %&gt;% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(aes(color = Species), size = 5, alpha = 0.75, show.legend = FALSE) +
-  labs(x = &quot;Petal width&quot;, y = &quot;Petal length&quot;) +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1,
-                    ) +
-  labs(title = &quot;Iris {closest_state}&quot;)</code></pre>
-<p><img src="labels_files/figure-html/irisColors-1.gif" style="display: block; margin: auto;" /></p>
-<p>To get around this, you could smooth the transition between distinct states with <code>enter_fade()</code> and <code>exit_fade()</code>.</p>
-<div id="enter_-exit_" class="section level2">
-<h2><code>enter_</code> &amp; <code>exit_</code></h2>
-<p>A few of the fine tuning functions work for both <code>transition_states()</code> and <code>transition_time()</code>.</p>
-<p>Specifically we will deal with <code>enter_</code> and <code>exit_</code>. Each can be paired with a variety of behaviors such as:</p>
-<ul>
-<li><code>appear</code> / <code>disappear</code> - make elements appear and disappear at the start or end of their transition.</li>
-<li><code>fade</code> - set <code>alpha</code> value to make elements fade in / fade out during transitions.</li>
-<li><code>grow</code> / <code>shrink</code> - set elements to make them grow into or shrink out during their transition</li>
-<li><code>recolor</code> - gradually change color or fill elements from their defined color to new color</li>
-<li><code>fly</code> - set <code>x</code> and <code>y</code> positions where all elements enter from / exit to</li>
-<li><code>drift</code> - modify the position of an element by a specified amount</li>
-</ul>
-<p>Each has additional customizable parameters.</p>
-<pre class="r"><code>iris %&gt;% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(aes(color = Species), size = 5, alpha = 0.75, show.legend = FALSE) +
-  labs(x = &quot;Petal width&quot;, y = &quot;Petal length&quot;) +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1,
-                    ) +
-  labs(title = &quot;Iris {closest_state}&quot;) +
-  enter_fade() +
-  exit_fade()</code></pre>
+  labs(title = &quot;Iris {closest_state}&quot;)
+
+irisAnimation +
+  ease_aes(&#39;cubic-in-out&#39;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="labels_files/figure-html/irisColors2-1.gif" alt="`enter_fade()` and `exit_fade()` to transition between colors"  />
+<img src="easing_files/figure-html/irisEasing-1.gif" alt="cubic-in-out easing"  />
 <p class="caption">
-<code>enter_fade()</code> and <code>exit_fade()</code> to transition between colors
+cubic-in-out easing
 </p>
 </div>
 </div>
-<div id="group-1l" class="section level2">
-<h2><code>group = 1L</code></h2>
-<p>Or best yet, set them with one group with <code>1L</code>:</p>
-<pre class="r"><code>iris %&gt;% 
-ggplot(aes(x = Petal.Width, y = Petal.Length)) + 
-  geom_point(aes(colour = Species, group = 1L), size = 5, alpha = 0.75, show.legend = FALSE) +
-  labs(x = &quot;Petal width&quot;, y = &quot;Petal length&quot;) +
-  transition_states(Species,
-                    transition_length = 2,
-                    state_length = 1) +
-  labs(title = &quot;Iris {closest_state}&quot;)</code></pre>
+<div id="bounce-out" class="section level2">
+<h2><code>bounce-out</code></h2>
+<pre class="r"><code>irisAnimation +
+  ease_aes(y = &quot;bounce-out&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="labels_files/figure-html/irisSmoothColor-1.gif" alt="`group = 1L` to transition between colors"  />
+<img src="easing_files/figure-html/irisBounceOut-1.gif" alt="bounce-out easing"  />
 <p class="caption">
-<code>group = 1L</code> to transition between colors
+bounce-out easing
 </p>
 </div>
 </div>

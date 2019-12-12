@@ -39,9 +39,20 @@ set.seed(923741)
 
 library("tidyverse")
 library("gganimate")
+library("kableExtra")
 
 data(iris) # load the iris data
 ```
+
+
+View the ***Iris*** data:
+```{r irisView, echo = FALSE}
+iris %>% 
+  kable() %>% 
+  kable_styling("striped", full_width = FALSE) %>% 
+  scroll_box(width = "500px", height = "200px")
+```
+
 
 
 ## Static plot

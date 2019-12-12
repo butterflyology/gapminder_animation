@@ -1,5 +1,5 @@
 ---
-title: "`labels`"
+title: "`labels` & color"
 author: "Chris Hamm"
 date: "`r Sys.Date()`"
 output: 
@@ -8,7 +8,6 @@ output:
     toc_float: TRUE
     toc_depth: 3
     css: ../misc/style.css
-
 ---
 
 
@@ -18,7 +17,7 @@ options(dplyr.width = Inf)
 ```
 
 
-```{r preliminaries, echo = TRUE}
+```{r preliminaries, echo = FALSE}
 set.seed(923741)
 
 library("tidyverse")
@@ -28,7 +27,6 @@ library("gganimate")
 
 ```{r irisData, echo = FALSE}
 data(iris) # load the iris data
-glimpse(iris) # view the data
 ```
 
 
@@ -61,3 +59,69 @@ iris_plot +
 
 
 And now we can see the name of the Genus (*Iris*) and species name in the upper left of the animated plot. Notice that the name changes species name when the data points are halfway through the transition to the next state. 
+
+
+# Colors 
+
+Normally, we would color distinct entities using the `color` argument inside of `aes()`. However, that generates some problems for us and makes the transition very abrupt. There is no transition among the groups, just an instantaneous change.
+
+
+```{r irisColors}
+iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(aes(color = Species), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1,
+                    ) +
+  labs(title = "Iris {closest_state}")
+```
+
+
+To get around this, you could smooth the transition between distinct states with `enter_fade()` and `exit_fade()`.
+
+## `enter_` & `exit_`
+
+A few of the fine tuning functions work for both `transition_states()` and `transition_time()`. 
+
+Specifically we will deal with `enter_` and `exit_`. Each can be paired with a variety of behaviors such as:
+
+  - `appear` / `disappear` - make elements appear and disappear at the start or end of their transition.
+  - `fade` - set `alpha` value to make elements fade in / fade out during transitions.
+  - `grow` / `shrink` - set elements to make them grow into or shrink out during their transition
+  - `recolor` - gradually change color or fill elements from their defined color to new color
+  - `fly` - set `x` and `y` positions where all elements enter from / exit to
+  - `drift` - modify the position of an element by a specified amount
+
+Each has additional customizable parameters. 
+
+
+```{r irisColors2, fig.cap = "`enter_fade()` and `exit_fade()` to transition between colors"}
+iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(aes(color = Species), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1,
+                    ) +
+  labs(title = "Iris {closest_state}") +
+  enter_fade() +
+  exit_fade()
+```
+
+
+## `group = 1L`
+
+Or best yet, set them with one group with `1L`:
+```{r irisSmoothColor, fig.cap = "`group = 1L` to transition between colors"}
+iris %>% 
+ggplot(aes(x = Petal.Width, y = Petal.Length)) + 
+  geom_point(aes(colour = Species, group = 1L), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2,
+                    state_length = 1) +
+  labs(title = "Iris {closest_state}")
+```

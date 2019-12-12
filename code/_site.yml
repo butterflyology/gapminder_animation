@@ -8,6 +8,9 @@ navbar:
       href: transition_states.html
     - text: "Labels"
       href: labels.html
+    - text: "Easing"
+      href: easing.html
+
 
 
 #  left:
