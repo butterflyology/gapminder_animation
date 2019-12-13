@@ -22,6 +22,8 @@ set.seed(923741)
 
 library("tidyverse")
 library("gganimate")
+
+data(iris)
 ```
 
 
@@ -94,4 +96,28 @@ iris_anim
 
 Observe how the data points in the animation cycle back  to the start once all the states have been plotted.
 
-Play around with each arguement and see how they alter your figure. 
+Play around with each arguments and see how they alter your figure. 
+
+
+# `geom_boxplot()`
+
+Start with our static plot using the `mtcars` data set
+```{r boxStatic}
+car_plot <- mtcars %>% 
+  ggplot(aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot() +
+  labs(y = "MPG", x = "Cylinders")
+
+car_plot
+```
+
+
+Now create the animation:
+```{r boxAnim}
+car_plot +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1)
+```
+
+

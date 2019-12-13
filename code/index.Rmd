@@ -8,7 +8,6 @@ output:
     toc_float: TRUE
     toc_depth: 3
     css: ../misc/style.css
-
 ---
 
 

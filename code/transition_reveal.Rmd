@@ -1,0 +1,97 @@
+---
+title: "`transition_reveal()`"
+author: "Chris Hamm"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 3
+    css: ../misc/style.css
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
+options(dplyr.width = Inf)
+```
+
+
+```{r preliminaries, echo = FALSE}
+set.seed(923741)
+
+library("tidyverse")
+library("gganimate")
+library("kableExtra")
+```
+
+
+# `geom_line()`
+
+How to create an animated line plot 
+```{r airQuality}
+data(airquality)
+
+airquality %>% 
+  kable() %>% 
+  kable_styling("striped", full_width = FALSE) %>% 
+  scroll_box(width = "500px", height = "200px")
+```
+
+
+Set the static plot:
+```{r airPlot}
+air_plot <- airquality %>% 
+  ggplot(
+    aes(x = Day, y = Temp, group = Month, color = factor(Month))
+  ) +
+  geom_line() +
+  scale_color_viridis_d(name = "Month") +
+  labs(x = "Day of Month", y = "Temperature") +
+  theme(legend.position = "top")
+
+air_plot
+```
+
+
+Extend lines by day across months
+```{r airAnim}
+air_plot +
+  transition_reveal(Day)
+```
+
+
+Add points to the plot to draw the eye
+```{r airLinePoint}
+air_plot +
+  geom_point() +
+  transition_reveal(Day)
+```
+
+
+# `geom_point()`
+
+Create the static plot
+```{r airPoint}
+air_point <- airquality %>% 
+  ggplot(aes(x = Day, y = Temp, group = Month, color = factor(Month))) +
+  geom_point() +
+  scale_color_viridis_d(name = "Month") +
+  labs(x = "Day of Month", y = "Temperature") +
+  theme(legend.position = "top")
+air_point
+```
+
+
+```{r airWake}
+air_point + 
+  transition_reveal(Day) +
+  shadow_wake(wake_length = 1, alpha = TRUE, size = TRUE)
+```
+
+
+```{r airSeqalong}
+air_point +
+  geom_point(aes(group = seq_along(Day))) +
+  transition_reveal(Day)
+```

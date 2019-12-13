@@ -345,13 +345,19 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="transition_states.html">transition_states()</a>
+  <a href="transition_states.html">transition_states</a>
 </li>
 <li>
   <a href="labels.html">Labels</a>
 </li>
 <li>
   <a href="easing.html">Easing</a>
+</li>
+<li>
+  <a href="transition_time.html">transition_time</a>
+</li>
+<li>
+  <a href="transition_reveal.html">transition_reveal</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -459,6 +465,74 @@ ggplot(aes(x = Petal.Width, y = Petal.Length)) +
 </p>
 </div>
 </div>
+</div>
+<div id="boxplot" class="section level1">
+<h1>Boxplot</h1>
+<div id="fading" class="section level2">
+<h2>Fading</h2>
+<p>Using our earlier boxplot from the <code>mtcars</code> data set, let’s set the fade in and out</p>
+<pre class="r"><code>car_plot +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1) +
+  enter_fade() +
+  labs(title = &quot;Gears: {closest_state}&quot;)</code></pre>
+<p><img src="labels_files/figure-html/boxFade-1.gif" style="display: block; margin: auto;" /></p>
+</div>
+<div id="multiple-effects" class="section level2">
+<h2>Multiple effects</h2>
+<pre class="r"><code>car_plot + 
+  theme_minimal() +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1) +
+  labs(title = &quot;Gears: {closest_state}&quot;) +
+  enter_fade() + 
+  enter_grow() +
+  exit_fly(x_loc = 7, y_loc = 40) + 
+  exit_recolour(fill = &#39;forestgreen&#39;)</code></pre>
+<p><img src="labels_files/figure-html/boxEffects-1.gif" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="geom_col" class="section level1">
+<h1><code>geom_col()</code></h1>
+<p>Summarize the <code>airquality</code> data and make a bar chart</p>
+<pre class="r"><code>mean_temp &lt;- airquality %&gt;% 
+  group_by(Month) %&gt;% 
+  summarize(mTemp = mean(Temp))
+mean_temp</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   Month mTemp
+##   &lt;int&gt; &lt;dbl&gt;
+## 1     5  65.5
+## 2     6  79.1
+## 3     7  83.9
+## 4     8  84.0
+## 5     9  76.9</code></pre>
+<p>Create the static plot</p>
+<pre class="r"><code>temp_plot &lt;- mean_temp %&gt;% 
+  ggplot(
+    aes(x = Month, y = mTemp, fill = mTemp)) +
+  geom_col() +
+  scale_fill_distiller(palette = &quot;Reds&quot;, direction = 1, name = &quot;Temp&quot;) +
+  theme_minimal() +
+  labs(y = &quot;Mean temperature&quot;, x = &quot;Month&quot;) +
+  theme(
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(color = &quot;white&quot;),
+    panel.ontop = TRUE)
+temp_plot</code></pre>
+<p><img src="labels_files/figure-html/meanStatic-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>temp_plot +
+  transition_states(Month, wrap = FALSE)</code></pre>
+<p><img src="labels_files/figure-html/meanAnim-1.gif" style="display: block; margin: auto;" /></p>
+<p>Add some effects:</p>
+<pre class="r"><code>temp_plot +
+  transition_states(Month, wrap = FALSE) +
+  shadow_mark() +
+  enter_grow() + 
+  enter_fade()</code></pre>
+<p><img src="labels_files/figure-html/meanEffect-1.gif" style="display: block; margin: auto;" /></p>
 </div>
 
 

@@ -125,3 +125,86 @@ ggplot(aes(x = Petal.Width, y = Petal.Length)) +
                     state_length = 1) +
   labs(title = "Iris {closest_state}")
 ```
+
+
+# Boxplot 
+
+## Fading
+
+```{r boxStatic, echo = FALSE}
+car_plot <- mtcars %>% 
+  ggplot(aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot() +
+  labs(y = "MPG", x = "Cylinders")
+```
+
+Using our earlier boxplot from the `mtcars` data set, let's set the fade in and out
+```{r boxFade}
+car_plot +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1) +
+  enter_fade() +
+  labs(title = "Gears: {closest_state}")
+```
+
+
+## Multiple effects
+
+```{r boxEffects}
+car_plot + 
+  theme_minimal() +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1) +
+  labs(title = "Gears: {closest_state}") +
+  enter_fade() + 
+  enter_grow() +
+  exit_fly(x_loc = 7, y_loc = 40) + 
+  exit_recolour(fill = 'forestgreen')
+```
+
+
+# `geom_col()`
+
+Summarize the `airquality` data and make a bar chart
+
+```{r airMean}
+mean_temp <- airquality %>% 
+  group_by(Month) %>% 
+  summarize(mTemp = mean(Temp))
+mean_temp
+```
+
+Create the static plot
+```{r meanStatic}
+temp_plot <- mean_temp %>% 
+  ggplot(
+    aes(x = Month, y = mTemp, fill = mTemp)) +
+  geom_col() +
+  scale_fill_distiller(palette = "Reds", direction = 1, name = "Temp") +
+  theme_minimal() +
+  labs(y = "Mean temperature", x = "Month") +
+  theme(
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(color = "white"),
+    panel.ontop = TRUE)
+temp_plot
+```
+
+
+```{r meanAnim}
+temp_plot +
+  transition_states(Month, wrap = FALSE)
+```
+
+
+Add some effects:
+```{r meanEffect}
+temp_plot +
+  transition_states(Month, wrap = FALSE) +
+  shadow_mark() +
+  enter_grow() + 
+  enter_fade()
+```
+

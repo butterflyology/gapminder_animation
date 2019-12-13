@@ -12,7 +12,7 @@
 
 <meta name="author" content="Chris Hamm" />
 
-<meta name="date" content="2019-12-09" />
+<meta name="date" content="2019-12-12" />
 
 <title>transition_states()</title>
 
@@ -345,10 +345,19 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="transition_states.html">transition_states()</a>
+  <a href="transition_states.html">transition_states</a>
 </li>
 <li>
   <a href="labels.html">Labels</a>
+</li>
+<li>
+  <a href="easing.html">Easing</a>
+</li>
+<li>
+  <a href="transition_time.html">transition_time</a>
+</li>
+<li>
+  <a href="transition_reveal.html">transition_reveal</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -364,7 +373,7 @@ div.tocify {
 
 <h1 class="title toc-ignore"><code>transition_states()</code></h1>
 <h4 class="author">Chris Hamm</h4>
-<h4 class="date">2019-12-09</h4>
+<h4 class="date">2019-12-12</h4>
 
 </div>
 
@@ -426,7 +435,25 @@ iris_anim</code></pre>
 2 second transition between states, 1 second pause at each state, wrap = TRUE
 </p>
 </div>
-<p>Play around with each arguement and see how they alter your figure.</p>
+<p>Observe how the data points in the animation cycle back to the start once all the states have been plotted.</p>
+<p>Play around with each arguments and see how they alter your figure.</p>
+</div>
+<div id="geom_boxplot" class="section level1">
+<h1><code>geom_boxplot()</code></h1>
+<p>Start with our static plot using the <code>mtcars</code> data set</p>
+<pre class="r"><code>car_plot &lt;- mtcars %&gt;% 
+  ggplot(aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot() +
+  labs(y = &quot;MPG&quot;, x = &quot;Cylinders&quot;)
+
+car_plot</code></pre>
+<p><img src="transition_states_files/figure-html/boxStatic-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Now create the animation:</p>
+<pre class="r"><code>car_plot +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1)</code></pre>
+<p><img src="transition_states_files/figure-html/boxAnim-1.gif" style="display: block; margin: auto;" /></p>
 </div>
 
 
