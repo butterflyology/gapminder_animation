@@ -17,7 +17,7 @@ options(dplyr.width = Inf)
 ```
 
 
-```{r preliminaries, echo = FALSE}
+```{r preliminaries, echo = FALSE, message = FALSE}
 set.seed(923741)
 
 library("tidyverse")
@@ -38,8 +38,6 @@ gapminder %>%
 ```
 
 
-
-# `transition_time()`
 Let's use with the `gapminder` data and try to recreate the Rosling plots.
 
 
@@ -95,7 +93,12 @@ gap_plot +
 
 ## `shadow_wake()`
 
-`shadow_wake(wake_length, size = TRUE, alpha = TRUE, color = NULL, fill = NULL, falloff = "cubic-in", wrap = TRUE, exclude_layer = NULL, exclude_phase = c("enter", "exit"))`
+```
+shadow_wake(wake_length, size = TRUE, alpha = TRUE,
+  color = NULL, fill = NULL, falloff = "cubic-in",
+  wrap = TRUE, exclude_layer = NULL,
+  exclude_phase = c("enter", "exit"))
+```
 
 ```{r gapShadow}
 gap_plot +

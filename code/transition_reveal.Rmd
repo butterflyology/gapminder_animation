@@ -17,7 +17,7 @@ options(dplyr.width = Inf)
 ```
 
 
-```{r preliminaries, echo = FALSE}
+```{r preliminaries, echo = FALSE, message = FALSE}
 set.seed(923741)
 
 library("tidyverse")

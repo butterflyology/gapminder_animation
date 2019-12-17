@@ -12,7 +12,7 @@
 
 <meta name="author" content="Chris Hamm" />
 
-<meta name="date" content="2019-12-12" />
+<meta name="date" content="2019-12-16" />
 
 <title>tranistion_time()</title>
 
@@ -374,16 +374,11 @@ div.tocify {
 
 <h1 class="title toc-ignore"><code>tranistion_time()</code></h1>
 <h4 class="author">Chris Hamm</h4>
-<h4 class="date">2019-12-12</h4>
+<h4 class="date">2019-12-16</h4>
 
 </div>
 
 
-<pre><code>## 
-## Attaching package: &#39;kableExtra&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     group_rows</code></pre>
 <p>Load the <strong>gapminder data</strong></p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:500px; ">
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -34493,8 +34488,6 @@ Africa
 </tbody>
 </table>
 </div>
-<div id="transition_time" class="section level1">
-<h1><code>transition_time()</code></h1>
 <p>Let’s use with the <code>gapminder</code> data and try to recreate the Rosling plots.</p>
 <pre class="r"><code>gap_plot &lt;- gapminder %&gt;% 
   ggplot(
@@ -34535,13 +34528,15 @@ facet_wrap(~continent) +
 </div>
 <div id="shadow_wake" class="section level2">
 <h2><code>shadow_wake()</code></h2>
-<p><code>shadow_wake(wake_length, size = TRUE, alpha = TRUE, color = NULL, fill = NULL, falloff = &quot;cubic-in&quot;, wrap = TRUE, exclude_layer = NULL, exclude_phase = c(&quot;enter&quot;, &quot;exit&quot;))</code></p>
+<pre><code>shadow_wake(wake_length, size = TRUE, alpha = TRUE,
+  color = NULL, fill = NULL, falloff = &quot;cubic-in&quot;,
+  wrap = TRUE, exclude_layer = NULL,
+  exclude_phase = c(&quot;enter&quot;, &quot;exit&quot;))</code></pre>
 <pre class="r"><code>gap_plot +
 transition_time(year) +
   labs(title = &quot;Year: {frame_time}&quot;) +
   shadow_wake(wake_length = 0.1, alpha = TRUE)</code></pre>
 <p><img src="transition_time_files/figure-html/gapShadow-1.gif" style="display: block; margin: auto;" /></p>
-</div>
 </div>
 
 
