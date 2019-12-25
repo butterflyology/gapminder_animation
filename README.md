@@ -13,3 +13,4 @@ Commits:
 1. 2019-12-07: Wrote the `_style.yml` file and began to populate the individual `.Rmd` files and create the pages.
 1. 2019-12-09: Adding more pages of the tutorial.
 1. 2019-12-12: Yet more pages - first draft is complete.
+1. 2019-12-25: Cleaned up the text and presentation on the pages. Will fill in the explanations next. 

@@ -1,5 +1,5 @@
 ---
-title: "`labels` & color"
+title: "Labels & Color"
 author: "Chris Hamm"
 date: "`r Sys.Date()`"
 output: 
@@ -165,15 +165,16 @@ car_plot +
 ```
 
 
-# `geom_col()`
+# Bar chart
 
-Summarize the `airquality` data and make a bar chart
+Summarize the `airquality` data and make a bar chart with `geom_col()`
+
+First we'll create a summary data set using the mean 
 
 ```{r airMean}
 mean_temp <- airquality %>% 
   group_by(Month) %>% 
   summarize(mTemp = mean(Temp))
-mean_temp
 ```
 
 Create the static plot

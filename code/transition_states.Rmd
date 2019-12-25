@@ -59,7 +59,7 @@ iris_anim
 If you think that this is a fairly straight forward plot and doens't seem to contain a lot of information, you are correct. Right now we want to get the individual parts of the plot working and we will add on to it. This way, if something breaks the code, we'll know exactly where the bug was introduced. Eventually we will want to distinguish `Species` by color. But adding `color = S[ecies` to the `ggplot` call will make the animation choppy, so we'll do that later and I'll show you a cleaver way to smooth it out . 
 
 
-# Four arguments
+## Arguments
 `transition_states()` takes **four** arguments:
 
   - `states` - variable name that contains discrete data
@@ -101,6 +101,8 @@ Play around with each arguments and see how they alter your figure.
 
 # `geom_boxplot()`
 
+Another use of `transition_states()` but with box plots. 
+
 Start with our static plot using the `mtcars` data set
 ```{r boxStatic}
 car_plot <- mtcars %>% 
@@ -120,4 +122,4 @@ car_plot +
                     state_length = 1)
 ```
 
-
+See the section on [`labels`](labels.html) to learn about adding an informative label to the plot. 
