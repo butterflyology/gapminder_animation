@@ -1,0 +1,75 @@
+---
+title: "gganimate "
+author: "Chris Hamm"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 3
+    css: misc/style.css
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
+options(dplyr.width = Inf)
+```
+
+# Introduction
+
+This goal of this tutorial is to demonstrate the fundamentals of the `gganimate` pacakge.
+
+`gganimate` creates animated figures by transitioning plots through different "states."
+
+The key is to think about what you want your plot to do and then iteratively build your animation.
+
+The key argument in `ggaminate` is the `transition` function but before we start animating figures we will create the static image that we will eventually animate.
+
+We'll start with a few `R` preliminaries
+
+
+## Preliminaries
+
+We'll load the required libraries and data set.
+
+```{r preliminaries, message = FALSE}
+set.seed(923741)
+
+library("tidyverse")
+library("gganimate")
+library("kableExtra")
+
+data(iris) # load the iris data
+```
+
+
+View the ***Iris*** data:
+```{r irisView, echo = FALSE}
+iris %>% 
+  kable() %>% 
+  kable_styling("striped", full_width = FALSE) %>% 
+  scroll_box(width = "500px", height = "200px")
+```
+
+
+
+## Static plot
+
+The first step is to create a static plot that contains the data that you want to present in your animated figure. Keep in mind that this plot may not look identical to the final animated figure becuase it will contain all of the data (without any transitions).
+
+I like to build my plots step-by-step and,once I get them looking like I want, I save them as objects to quickly call them.
+
+
+```{r irisSaved, fig.cap = "Static plot of the Iris data set"}
+iris_plot <- iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length")
+
+iris_plot
+```
+
+Now that we have a static plot containing all the information we want to animate, we can move on to `gganimate` and define the animation with the `transition_states()` function.
+
+

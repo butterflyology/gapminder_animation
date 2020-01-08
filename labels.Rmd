@@ -1,0 +1,211 @@
+---
+title: "Labels & Color"
+author: "Chris Hamm"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 3
+    css: ../misc/style.css
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
+options(dplyr.width = Inf)
+```
+
+
+```{r preliminaries, echo = FALSE}
+set.seed(923741)
+
+library("tidyverse")
+library("gganimate")
+```
+
+
+```{r irisData, echo = FALSE}
+data(iris) # load the iris data
+```
+
+
+The animated plot is looking godecent but I think that we can increase the information content on the figure by adding labels to the plot. This is especially important when all the data points are the same color.
+
+
+# Labels
+We can add labels!
+
+Using the `labs()` function after `transition_states()` will add a label to your plot. You can use syntax from the `glue` package to define what you would like to plot. If you want to have the `state` appear on your plot, you can select from three options:
+
+  - **previous_state** - previous variable state
+  - **closest_state** - the current variable state
+  - **next_state** - next variable state
+
+Since we are going to add the species name, I'll go ahead and remove the legend since it would duplicate information in the plot.
+
+```{r irisLabs}
+iris_plot <- iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length")
+
+iris_plot +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1) +
+  labs(title = "Iris {closest_state}")
+```
+
+
+And now we can see the name of the Genus (*Iris*) and species name in the upper left of the animated plot. Notice that the name changes species name when the data points are halfway through the transition to the next state. 
+
+
+# Colors 
+
+Normally, we would color distinct entities using the `color` argument inside of `aes()`. However, that generates some problems for us and makes the transition very abrupt. There is no transition among the groups, just an instantaneous change.
+
+
+```{r irisColors}
+iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(aes(color = Species), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1,
+                    ) +
+  labs(title = "Iris {closest_state}")
+```
+
+
+To get around this, you could smooth the transition between distinct states with `enter_fade()` and `exit_fade()`.
+
+## `enter_` & `exit_`
+
+A few of the fine tuning functions work for both `transition_states()` and `transition_time()`. 
+
+Specifically we will deal with `enter_` and `exit_`. Each can be paired with a variety of behaviors such as:
+
+  - `appear` / `disappear` - make elements appear and disappear at the start or end of their transition.
+  - `fade` - set `alpha` value to make elements fade in / fade out during transitions.
+  - `grow` / `shrink` - set elements to make them grow into or shrink out during their transition
+  - `recolor` - gradually change color or fill elements from their defined color to new color
+  - `fly` - set `x` and `y` positions where all elements enter from / exit to
+  - `drift` - modify the position of an element by a specified amount
+
+Each has additional customizable parameters. 
+
+
+```{r irisColors2, fig.cap = "`enter_fade()` and `exit_fade()` to transition between colors"}
+iris %>% 
+  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
+  geom_point(aes(color = Species), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2, 
+                    state_length = 1,
+                    ) +
+  labs(title = "Iris {closest_state}") +
+  enter_fade() +
+  exit_fade()
+```
+
+
+## `group = 1L`
+
+Or best yet, set them with one group with `1L`:
+```{r irisSmoothColor, fig.cap = "`group = 1L` to transition between colors"}
+iris %>% 
+ggplot(aes(x = Petal.Width, y = Petal.Length)) + 
+  geom_point(aes(colour = Species, group = 1L), size = 5, alpha = 0.75, show.legend = FALSE) +
+  labs(x = "Petal width", y = "Petal length") +
+  transition_states(Species,
+                    transition_length = 2,
+                    state_length = 1) +
+  labs(title = "Iris {closest_state}")
+```
+
+
+# Boxplot 
+
+## Fading
+
+```{r boxStatic, echo = FALSE}
+car_plot <- mtcars %>% 
+  ggplot(aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot() +
+  labs(y = "MPG", x = "Cylinders")
+```
+
+Using our earlier boxplot from the `mtcars` data set, let's set the fade in and out
+```{r boxFade}
+car_plot +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1) +
+  enter_fade() +
+  labs(title = "Gears: {closest_state}")
+```
+
+
+## Multiple effects
+
+```{r boxEffects}
+car_plot + 
+  theme_minimal() +
+  transition_states(gear, 
+                    transition_length = 2, 
+                    state_length = 1) +
+  labs(title = "Gears: {closest_state}") +
+  enter_fade() + 
+  enter_grow() +
+  exit_fly(x_loc = 7, y_loc = 40) + 
+  exit_recolour(fill = 'forestgreen')
+```
+
+
+# Bar chart
+
+Summarize the `airquality` data and make a bar chart with `geom_col()`
+
+First we'll create a summary data set using the mean 
+
+```{r airMean}
+mean_temp <- airquality %>% 
+  group_by(Month) %>% 
+  summarize(mTemp = mean(Temp))
+```
+
+Create the static plot
+```{r meanStatic}
+temp_plot <- mean_temp %>% 
+  ggplot(
+    aes(x = Month, y = mTemp, fill = mTemp)) +
+  geom_col() +
+  scale_fill_distiller(palette = "Reds", direction = 1, name = "Temp") +
+  theme_minimal() +
+  labs(y = "Mean temperature", x = "Month") +
+  theme(
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(color = "white"),
+    panel.ontop = TRUE)
+temp_plot
+```
+
+
+```{r meanAnim}
+temp_plot +
+  transition_states(Month, wrap = FALSE)
+```
+
+
+Add some effects:
+```{r meanEffect}
+temp_plot +
+  transition_states(Month, wrap = FALSE) +
+  shadow_mark() +
+  enter_grow() + 
+  enter_fade()
+```
+
