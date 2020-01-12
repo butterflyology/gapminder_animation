@@ -15,3 +15,4 @@ Commits:
 1. 2019-12-12: Yet more pages - first draft is complete.
 1. 2019-12-25: Cleaned up the text and presentation on the pages. Will fill in the explanations next.
 1. 2020-01-08: Restructured files to work with gh-pages and GH.
+1. 2020-01-12: Updated descriptive text and formatting (in yaml header).

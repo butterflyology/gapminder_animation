@@ -12,7 +12,7 @@ output:
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 6, fig.asp = 0.618, fig.show = "hold", cache = TRUE)
 options(dplyr.width = Inf)
 ```
 

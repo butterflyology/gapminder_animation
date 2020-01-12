@@ -12,7 +12,7 @@ output:
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 6, fig.asp = 0.618, fig.show = "hold", cache = TRUE)
 options(dplyr.width = Inf)
 ```
 
@@ -20,11 +20,19 @@ options(dplyr.width = Inf)
 
 This goal of this tutorial is to demonstrate the fundamentals of the `gganimate` pacakge.
 
-`gganimate` creates animated figures by transitioning plots through different "states."
+`gganimate` creates animated figures by transitioning plots through different "states." These states can be based on features such as levels or points in time. The key argument in `ggaminate` is the `transition_` function. The available `transition_` options are:
 
-The key is to think about what you want your plot to do and then iteratively build your animation.
+  - `transition_states()`
+  - `transition_time()`
+  - `transition_reveal()`
+  - `transition_componants()`
+  - `transition_events()`
+  - `transition_filter()`
+  - `transition_layers()`
+  - `transition_manual()`
+  - `transition_null()`
 
-The key argument in `ggaminate` is the `transition` function but before we start animating figures we will create the static image that we will eventually animate.
+The key is to think about what you want your plot to do and then iteratively build your animation. Before we start animating figures we will create the static image that we will eventually animate. I've found that this makes the entire process easier as it forces me to think about what I want say and prepare the data accordingly.
 
 We'll start with a few `R` preliminaries
 
@@ -42,6 +50,7 @@ library("kableExtra")
 
 data(iris) # load the iris data
 ```
+Please note that `kableExtra` is not required to build your animations; I'm using it to display the data in a pretty format in this tutorial.
 
 
 View the ***Iris*** data:
@@ -52,11 +61,14 @@ iris %>%
   scroll_box(width = "500px", height = "200px")
 ```
 
+There are five varaibles in our data set; `Species` is categorical and the remaining variables are continuous.
 
 
 ## Static plot
 
-The first step is to create a static plot that contains the data that you want to present in your animated figure. Keep in mind that this plot may not look identical to the final animated figure becuase it will contain all of the data (without any transitions).
+> <center>**Goal:** Display the relationship between `Petal.Length` and `Petal.Width`  for each of the three *Iris* species. \center
+
+The first step is to create a static plot that contains the variables that you want to present in your animated figure. Keep in mind that this plot may not look identical to the final animated figure becuase it will contain all of the data (without any transitions).
 
 I like to build my plots step-by-step and,once I get them looking like I want, I save them as objects to quickly call them.
 
@@ -70,6 +82,6 @@ iris_plot <- iris %>%
 iris_plot
 ```
 
-Now that we have a static plot containing all the information we want to animate, we can move on to `gganimate` and define the animation with the `transition_states()` function.
+Now that we have a static plot containing all the information we want to animate, we can move on to `gganimate` and define the animation with the [`transition_states()`](transition_states.html) function. 
 
 

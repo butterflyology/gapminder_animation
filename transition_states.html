@@ -12,7 +12,7 @@
 
 <meta name="author" content="Chris Hamm" />
 
-<meta name="date" content="2019-12-25" />
+<meta name="date" content="2020-01-12" />
 
 <title>transition_states()</title>
 
@@ -348,7 +348,7 @@ div.tocify {
   <a href="transition_states.html">transition_states</a>
 </li>
 <li>
-  <a href="labels.html">Labels</a>
+  <a href="labels.html">Labels &amp; Color</a>
 </li>
 <li>
   <a href="easing.html">Easing</a>
@@ -373,19 +373,22 @@ div.tocify {
 
 <h1 class="title toc-ignore"><code>transition_states()</code></h1>
 <h4 class="author">Chris Hamm</h4>
-<h4 class="date">2019-12-25</h4>
+<h4 class="date">2020-01-12</h4>
 
 </div>
 
 
+<p>We’re picking up where the <a href="index.html"><code>index</code></a> left off.</p>
 <p>With our static plot in place, let’s make it move.</p>
 <div id="motivation" class="section level1">
 <h1>Motivation</h1>
-<p>Goal: We want to create an animated figure which shows the <code>Petal.Length</code> and <code>Petal.Width</code> by <code>Species</code> using the <code>iris</code> data set.</p>
+<blockquote>
+<p><strong>Goal:</strong> We want to create an animated figure which shows the <code>Petal.Length</code> and <code>Petal.Width</code> by <code>Species</code> using the <code>iris</code> data set.</p>
+</blockquote>
 </div>
 <div id="animated-plot" class="section level1">
 <h1>Animated plot</h1>
-<p>We need to use the <code>transition_states()</code> function. <code>transition_states()</code> works with discrete data. There are other <code>transition_</code> funcions but we’ll start here.</p>
+<p>Because <code>Species</code> is a discrete variable (a factor) we need to use the <code>transition_states()</code> function. <code>transition_states()</code> works with discrete data.</p>
 <p>At a minimum, you need to tell <code>transition_states()</code> which discrete variable you want to tranistion between.</p>
 <pre class="r"><code>iris_anim &lt;- iris_plot + 
   transition_states(Species)
@@ -448,7 +451,7 @@ iris_anim</code></pre>
   labs(y = &quot;MPG&quot;, x = &quot;Cylinders&quot;)
 
 car_plot</code></pre>
-<p><img src="transition_states_files/figure-html/boxStatic-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="transition_states_files/figure-html/boxStatic-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Now create the animation:</p>
 <pre class="r"><code>car_plot +
   transition_states(gear, 

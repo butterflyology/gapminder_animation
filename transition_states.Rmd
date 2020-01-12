@@ -12,7 +12,7 @@ output:
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 6, fig.asp = 0.618, fig.show = "hold", cache = TRUE)
 options(dplyr.width = Inf)
 ```
 
@@ -35,17 +35,19 @@ iris_plot <- iris %>%
 
 ```
 
-With our static plot in place, let's make it move. 
+We're picking up where the [`index`](index.html) left off.
+
+With our static plot in place, let's make it move.
 
 
 # Motivation
 
-Goal: We want to create an animated figure which shows the `Petal.Length` and `Petal.Width` by `Species` using the `iris` data set.
+> **Goal:** We want to create an animated figure which shows the `Petal.Length` and `Petal.Width` by `Species` using the `iris` data set.
 
 
 # Animated plot
 
-We need to use the `transition_states()` function. `transition_states()` works with discrete data. There are other `transition_` funcions but we'll start here.
+Because `Species` is a discrete variable (a factor) we need to use the `transition_states()` function. `transition_states()` works with discrete data.
 
 At a minimum, you need to tell `transition_states()` which discrete variable you want to tranistion between.
 

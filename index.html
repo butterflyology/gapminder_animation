@@ -12,7 +12,7 @@
 
 <meta name="author" content="Chris Hamm" />
 
-<meta name="date" content="2020-01-08" />
+<meta name="date" content="2020-01-12" />
 
 <title>gganimate</title>
 
@@ -349,7 +349,7 @@ div.tocify {
   <a href="transition_states.html">transition_states</a>
 </li>
 <li>
-  <a href="labels.html">Labels</a>
+  <a href="labels.html">Labels &amp; Color</a>
 </li>
 <li>
   <a href="easing.html">Easing</a>
@@ -374,7 +374,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">gganimate</h1>
 <h4 class="author">Chris Hamm</h4>
-<h4 class="date">2020-01-08</h4>
+<h4 class="date">2020-01-12</h4>
 
 </div>
 
@@ -382,9 +382,19 @@ div.tocify {
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>This goal of this tutorial is to demonstrate the fundamentals of the <code>gganimate</code> pacakge.</p>
-<p><code>gganimate</code> creates animated figures by transitioning plots through different “states.”</p>
-<p>The key is to think about what you want your plot to do and then iteratively build your animation.</p>
-<p>The key argument in <code>ggaminate</code> is the <code>transition</code> function but before we start animating figures we will create the static image that we will eventually animate.</p>
+<p><code>gganimate</code> creates animated figures by transitioning plots through different “states.” These states can be based on features such as levels or points in time. The key argument in <code>ggaminate</code> is the <code>transition_</code> function. The available <code>transition_</code> options are:</p>
+<ul>
+<li><code>transition_states()</code></li>
+<li><code>transition_time()</code></li>
+<li><code>transition_reveal()</code></li>
+<li><code>transition_componants()</code></li>
+<li><code>transition_events()</code></li>
+<li><code>transition_filter()</code></li>
+<li><code>transition_layers()</code></li>
+<li><code>transition_manual()</code></li>
+<li><code>transition_null()</code></li>
+</ul>
+<p>The key is to think about what you want your plot to do and then iteratively build your animation. Before we start animating figures we will create the static image that we will eventually animate. I’ve found that this makes the entire process easier as it forces me to think about what I want say and prepare the data accordingly.</p>
 <p>We’ll start with a few <code>R</code> preliminaries</p>
 <div id="preliminaries" class="section level2">
 <h2>Preliminaries</h2>
@@ -396,6 +406,7 @@ library(&quot;gganimate&quot;)
 library(&quot;kableExtra&quot;)
 
 data(iris) # load the iris data</code></pre>
+<p>Please note that <code>kableExtra</code> is not required to build your animations; I’m using it to display the data in a pretty format in this tutorial.</p>
 View the <strong><em>Iris</em></strong> data:
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:500px; ">
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -2972,10 +2983,15 @@ virginica
 </tbody>
 </table>
 </div>
+<p>There are five varaibles in our data set; <code>Species</code> is categorical and the remaining variables are continuous.</p>
 </div>
 <div id="static-plot" class="section level2">
 <h2>Static plot</h2>
-<p>The first step is to create a static plot that contains the data that you want to present in your animated figure. Keep in mind that this plot may not look identical to the final animated figure becuase it will contain all of the data (without any transitions).</p>
+<blockquote>
+<center>
+<p><strong>Goal:</strong> Display the relationship between <code>Petal.Width</code> and <code>Petal.Length</code> for each of the three <em>Iris</em> species. </p>
+</blockquote>
+<p>The first step is to create a static plot that contains the variables that you want to present in your animated figure. Keep in mind that this plot may not look identical to the final animated figure becuase it will contain all of the data (without any transitions).</p>
 <p>I like to build my plots step-by-step and,once I get them looking like I want, I save them as objects to quickly call them.</p>
 <pre class="r"><code>iris_plot &lt;- iris %&gt;% 
   ggplot(aes(x = Petal.Width, y= Petal.Length)) +
@@ -2984,12 +3000,12 @@ virginica
 
 iris_plot</code></pre>
 <div class="figure" style="text-align: center">
-<img src="index_files/figure-html/irisSaved-1.png" alt="Static plot of the Iris data set" width="672" />
+<img src="index_files/figure-html/irisSaved-1.png" alt="Static plot of the Iris data set" width="576" />
 <p class="caption">
 Static plot of the Iris data set
 </p>
 </div>
-<p>Now that we have a static plot containing all the information we want to animate, we can move on to <code>gganimate</code> and define the animation with the <code>transition_states()</code> function.</p>
+<p>Now that we have a static plot containing all the information we want to animate, we can move on to <code>gganimate</code> and define the animation with the <a href="transition_states.html"><code>transition_states()</code></a> function.</p>
 </div>
 </div>
 

@@ -6,7 +6,7 @@ navbar:
   left:
     - text: "transition_states"
       href: transition_states.html
-    - text: "Labels"
+    - text: "Labels & Color"
       href: labels.html
     - text: "Easing"
       href: easing.html
