@@ -12,7 +12,14 @@ output:
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 6, fig.asp = 0.618, fig.show = "hold", cache = TRUE)
+knitr::opts_chunk$set(
+	echo = TRUE,
+	fig.align = "center",
+	fig.asp = 0.618,
+	fig.show = "hold",
+	fig.width = 6,
+	cache = TRUE
+)
 options(dplyr.width = Inf)
 ```
 
@@ -28,11 +35,12 @@ data(iris)
 
 
 ```{r iris_plot, echo = FALSE}
-iris_plot <- iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
+iris_plot <- iris %>%
+  ggplot(aes(x = Petal.Width, y = Petal.Length)) +
+  geom_point(size = 5,
+             alpha = 0.75,
+             show.legend = FALSE) +
   labs(x = "Petal width", y = "Petal length")
-
 ```
 
 We're picking up where the [`index`](index.html) left off.
@@ -58,7 +66,7 @@ iris_anim <- iris_plot +
 iris_anim
 ```
 
-If you think that this is a fairly straight forward plot and doens't seem to contain a lot of information, you are correct. Right now we want to get the individual parts of the plot working and we will add on to it. This way, if something breaks the code, we'll know exactly where the bug was introduced. Eventually we will want to distinguish `Species` by color. But adding `color = S[ecies` to the `ggplot` call will make the animation choppy, so we'll do that later and I'll show you a cleaver way to smooth it out . 
+If you think that this is a fairly straight forward plot and doens't seem to contain a lot of information, you are correct. Right now we want to get the individual parts of the plot working and we will add on to it. This way, if something breaks the code, we'll know exactly where the bug was introduced. Eventually we will want to distinguish `Species` by color. But adding `color = Species` to the `ggplot` call will make the animation choppy, so we'll do that later and I'll show you a cleaver way to smooth it out . 
 
 
 ## Arguments
@@ -74,13 +82,14 @@ If you think that this is a fairly straight forward plot and doens't seem to con
 These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions. 
 
 
-
 ```{r iris_fineTune, fig.cap = "2 second transition between states, 1 second pause at each state, wrap = FALSE"}
 iris_anim <-  iris_plot +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1,
-                    wrap = FALSE)
+  transition_states(
+    Species,
+    transition_length = 2,
+    state_length = 1,
+    wrap = FALSE
+  )
 iris_anim
 ```
 
@@ -89,10 +98,12 @@ What if we change the code so that `wrap = TRUE`?
 
 ```{r iris_fineTune2, fig.cap = "2 second transition between states, 1 second pause at each state, wrap = TRUE"}
 iris_anim <-  iris_plot +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1,
-                    wrap = TRUE)
+  transition_states(
+    Species,
+    transition_length = 2,
+    state_length = 1,
+    wrap = TRUE
+  )
 iris_anim
 ```
 
@@ -107,7 +118,7 @@ Another use of `transition_states()` but with box plots.
 
 Start with our static plot using the `mtcars` data set
 ```{r boxStatic}
-car_plot <- mtcars %>% 
+car_plot <- mtcars %>%
   ggplot(aes(x = factor(cyl), y = mpg)) +
   geom_boxplot() +
   labs(y = "MPG", x = "Cylinders")
@@ -119,8 +130,8 @@ car_plot
 Now create the animation:
 ```{r boxAnim}
 car_plot +
-  transition_states(gear, 
-                    transition_length = 2, 
+  transition_states(gear,
+                    transition_length = 2,
                     state_length = 1)
 ```
 

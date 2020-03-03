@@ -76,7 +76,7 @@ diamond_1 <- diamonds %>%
         panel.ontop = TRUE,
         legend.position = "none") +
   transition_states(cut) +
-  ggtitle("Diamond cut: {closest_state}")
+  ggtitle("Diamond cut: {frame_time}")
 
 diamond_animated <- animate(diamond_1)
 

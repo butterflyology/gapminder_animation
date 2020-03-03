@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Chris Hamm" />
 
-<meta name="date" content="2020-01-12" />
+<meta name="date" content="2020-03-03" />
 
 <title>gganimate</title>
 
@@ -239,6 +238,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -267,6 +267,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -345,8 +351,20 @@ div.tocify {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="transition_states.html">transition_states</a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    trasition
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="transition_states.html">transition_states</a>
+    </li>
+    <li>
+      <a href="transition_reveal.html">transition_reveal</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="labels.html">Labels &amp; Color</a>
@@ -356,9 +374,6 @@ div.tocify {
 </li>
 <li>
   <a href="transition_time.html">transition_time</a>
-</li>
-<li>
-  <a href="transition_reveal.html">transition_reveal</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -374,7 +389,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">gganimate</h1>
 <h4 class="author">Chris Hamm</h4>
-<h4 class="date">2020-01-12</h4>
+<h4 class="date">2020-03-03</h4>
 
 </div>
 
@@ -403,7 +418,6 @@ div.tocify {
 
 library(&quot;tidyverse&quot;)
 library(&quot;gganimate&quot;)
-library(&quot;kableExtra&quot;)
 
 data(iris) # load the iris data</code></pre>
 <p>Please note that <code>kableExtra</code> is not required to build your animations; I’m using it to display the data in a pretty format in this tutorial.</p>
@@ -2989,13 +3003,15 @@ virginica
 <h2>Static plot</h2>
 <blockquote>
 <center>
-<p><strong>Goal:</strong> Display the relationship between <code>Petal.Width</code> and <code>Petal.Length</code> for each of the three <em>Iris</em> species. </p>
+<p><strong>Goal:</strong> Display the relationship between <code>Petal.Length</code> and <code>Petal.Width</code> for each of the three <em>Iris</em> species. </p>
 </blockquote>
 <p>The first step is to create a static plot that contains the variables that you want to present in your animated figure. Keep in mind that this plot may not look identical to the final animated figure becuase it will contain all of the data (without any transitions).</p>
 <p>I like to build my plots step-by-step and,once I get them looking like I want, I save them as objects to quickly call them.</p>
-<pre class="r"><code>iris_plot &lt;- iris %&gt;% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
+<pre class="r"><code>iris_plot &lt;- iris %&gt;%
+  ggplot(aes(x = Petal.Width, y = Petal.Length)) +
+  geom_point(size = 5,
+             alpha = 0.75,
+             show.legend = FALSE) +
   labs(x = &quot;Petal width&quot;, y = &quot;Petal length&quot;)
 
 iris_plot</code></pre>

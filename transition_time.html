@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Chris Hamm" />
 
-<meta name="date" content="2020-01-12" />
+<meta name="date" content="2020-03-03" />
 
 <title>tranistion_time()</title>
 
@@ -239,6 +238,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -267,6 +267,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -345,8 +351,20 @@ div.tocify {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="transition_states.html">transition_states</a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    trasition
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="transition_states.html">transition_states</a>
+    </li>
+    <li>
+      <a href="transition_reveal.html">transition_reveal</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="labels.html">Labels &amp; Color</a>
@@ -356,9 +374,6 @@ div.tocify {
 </li>
 <li>
   <a href="transition_time.html">transition_time</a>
-</li>
-<li>
-  <a href="transition_reveal.html">transition_reveal</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -374,7 +389,7 @@ div.tocify {
 
 <h1 class="title toc-ignore"><code>tranistion_time()</code></h1>
 <h4 class="author">Chris Hamm</h4>
-<h4 class="date">2020-01-12</h4>
+<h4 class="date">2020-03-03</h4>
 
 </div>
 
@@ -34489,10 +34504,13 @@ Africa
 </table>
 </div>
 <p>Let’s use with the <code>gapminder</code> data and try to recreate the Rosling plots.</p>
-<pre class="r"><code>gap_plot &lt;- gapminder %&gt;% 
-  ggplot(
-    aes(x = gdpPercap, y = lifeExp, 
-        size = pop, color = country)) +
+<pre class="r"><code>gap_plot &lt;- gapminder %&gt;%
+  ggplot(aes(
+    x = gdpPercap,
+    y = lifeExp,
+    size = pop,
+    color = country
+  )) +
   geom_point(show.legend = FALSE, alpha = 0.7) +
   scale_color_viridis_d() +
   scale_size(range = c(2, 12)) +
@@ -34502,14 +34520,14 @@ Africa
 gap_plot</code></pre>
 <p><img src="transition_time_files/figure-html/gapminderStatic-1.png" width="576" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>gap_plot +
-transition_time(year) +
+  transition_time(year) +
   labs(title = &quot;Year: {frame_time}&quot;)</code></pre>
 <p><img src="transition_time_files/figure-html/gapTime-1.gif" style="display: block; margin: auto;" /></p>
 <div id="facet_wrap" class="section level2">
 <h2><code>facet_wrap()</code></h2>
 <pre class="r"><code>gap_plot +
-facet_wrap(~continent) +
-  transition_time(year) + 
+  facet_wrap( ~ continent) +
+  transition_time(year) +
   labs(title = &quot;Year: {frame_time}&quot;)</code></pre>
 <p><img src="transition_time_files/figure-html/gapWrap-1.gif" style="display: block; margin: auto;" /></p>
 </div>
@@ -34520,7 +34538,7 @@ facet_wrap(~continent) +
 <li><code>fixed_x</code>: <code>-</code>fixed_y<code>: -</code>exclude<code>: a layer / indes -</code>aspect_ratio<code>: overrides any</code>fixed_`</li>
 </ul>
 <p>I personally do not care for this in most situations I have encountered. If you find a good use case please let me know.</p>
-<pre class="r"><code>gap_plot + 
+<pre class="r"><code>gap_plot +
   transition_time(year) +
   labs(title = &quot;Year: {frame_time}&quot;) +
   view_follow(fixed_y = TRUE)</code></pre>
@@ -34533,7 +34551,7 @@ facet_wrap(~continent) +
   wrap = TRUE, exclude_layer = NULL,
   exclude_phase = c(&quot;enter&quot;, &quot;exit&quot;))</code></pre>
 <pre class="r"><code>gap_plot +
-transition_time(year) +
+  transition_time(year) +
   labs(title = &quot;Year: {frame_time}&quot;) +
   shadow_wake(wake_length = 0.1, alpha = TRUE)</code></pre>
 <p><img src="transition_time_files/figure-html/gapShadow-1.gif" style="display: block; margin: auto;" /></p>

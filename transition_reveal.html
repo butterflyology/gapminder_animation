@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Chris Hamm" />
 
-<meta name="date" content="2020-01-12" />
+<meta name="date" content="2020-03-03" />
 
 <title>transition_reveal()</title>
 
@@ -239,6 +238,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -267,6 +267,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -345,8 +351,20 @@ div.tocify {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="transition_states.html">transition_states</a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    trasition
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="transition_states.html">transition_states</a>
+    </li>
+    <li>
+      <a href="transition_reveal.html">transition_reveal</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="labels.html">Labels &amp; Color</a>
@@ -356,9 +374,6 @@ div.tocify {
 </li>
 <li>
   <a href="transition_time.html">transition_time</a>
-</li>
-<li>
-  <a href="transition_reveal.html">transition_reveal</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -374,7 +389,7 @@ div.tocify {
 
 <h1 class="title toc-ignore"><code>transition_reveal()</code></h1>
 <h4 class="author">Chris Hamm</h4>
-<h4 class="date">2020-01-12</h4>
+<h4 class="date">2020-03-03</h4>
 
 </div>
 
@@ -384,9 +399,9 @@ div.tocify {
 <p>How to create an animated line plot</p>
 <pre class="r"><code>data(airquality)
 
-airquality %&gt;% 
-  kable() %&gt;% 
-  kable_styling(&quot;striped&quot;, full_width = FALSE) %&gt;% 
+airquality %&gt;%
+  kable() %&gt;%
+  kable_styling(&quot;striped&quot;, full_width = FALSE) %&gt;%
   scroll_box(width = &quot;500px&quot;, height = &quot;200px&quot;)</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:500px; ">
 <table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -3477,10 +3492,13 @@ NA
 </table>
 </div>
 <p>Set the static plot:</p>
-<pre class="r"><code>air_plot &lt;- airquality %&gt;% 
-  ggplot(
-    aes(x = Day, y = Temp, group = Month, color = factor(Month))
-  ) +
+<pre class="r"><code>air_plot &lt;- airquality %&gt;%
+  ggplot(aes(
+    x = Day,
+    y = Temp,
+    group = Month,
+    color = factor(Month)
+  )) +
   geom_line() +
   scale_color_viridis_d(name = &quot;Month&quot;) +
   labs(x = &quot;Day of Month&quot;, y = &quot;Temperature&quot;) +
@@ -3501,17 +3519,25 @@ air_plot</code></pre>
 <div id="geom_point" class="section level1">
 <h1><code>geom_point()</code></h1>
 <p>Create the static plot</p>
-<pre class="r"><code>air_point &lt;- airquality %&gt;% 
-  ggplot(aes(x = Day, y = Temp, group = Month, color = factor(Month))) +
+<pre class="r"><code>air_point &lt;- airquality %&gt;%
+  ggplot(aes(
+    x = Day,
+    y = Temp,
+    group = Month,
+    color = factor(Month)
+  )) +
   geom_point() +
   scale_color_viridis_d(name = &quot;Month&quot;) +
   labs(x = &quot;Day of Month&quot;, y = &quot;Temperature&quot;) +
   theme(legend.position = &quot;top&quot;)
+
 air_point</code></pre>
 <p><img src="transition_reveal_files/figure-html/airPoint-1.png" width="576" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>air_point + 
+<pre class="r"><code>air_point +
   transition_reveal(Day) +
-  shadow_wake(wake_length = 1, alpha = TRUE, size = TRUE)</code></pre>
+  shadow_wake(wake_length = 1,
+              alpha = TRUE,
+              size = TRUE)</code></pre>
 <p><img src="transition_reveal_files/figure-html/airWake-1.gif" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>air_point +
   geom_point(aes(group = seq_along(Day))) +

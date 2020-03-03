@@ -4,16 +4,19 @@ navbar:
   title: "gganimate"
   href: index.html
   left:
-    - text: "transition_states"
-      href: transition_states.html
+    - text: "trasition"
+      menu:
+          - text: "transition_states"
+            href: transition_states.html
+          - text: "transition_reveal"
+            href: transition_reveal.html
     - text: "Labels & Color"
       href: labels.html
     - text: "Easing"
       href: easing.html
     - text: "transition_time"
       href: transition_time.html
-    - text: "transition_reveal"
-      href: transition_reveal.html
+
 
 
 #  left:

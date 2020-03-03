@@ -12,7 +12,14 @@ output:
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 6, fig.asp = 0.618, fig.show = "hold", cache = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  fig.width = 6,
+  fig.asp = 0.618,
+  fig.show = "hold",
+  cache = TRUE
+)
 options(dplyr.width = Inf)
 ```
 
@@ -46,7 +53,6 @@ set.seed(923741)
 
 library("tidyverse")
 library("gganimate")
-library("kableExtra")
 
 data(iris) # load the iris data
 ```
@@ -55,10 +61,10 @@ Please note that `kableExtra` is not required to build your animations; I'm usin
 
 View the ***Iris*** data:
 ```{r irisView, echo = FALSE}
-iris %>% 
-  kable() %>% 
-  kable_styling("striped", full_width = FALSE) %>% 
-  scroll_box(width = "500px", height = "200px")
+iris %>%
+  kableExtra::kable() %>%
+  kableExtra::kable_styling("striped", full_width = FALSE) %>%
+  kableExtra::scroll_box(width = "500px", height = "200px")
 ```
 
 There are five varaibles in our data set; `Species` is categorical and the remaining variables are continuous.
@@ -74,9 +80,11 @@ I like to build my plots step-by-step and,once I get them looking like I want, I
 
 
 ```{r irisSaved, fig.cap = "Static plot of the Iris data set"}
-iris_plot <- iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
+iris_plot <- iris %>%
+  ggplot(aes(x = Petal.Width, y = Petal.Length)) +
+  geom_point(size = 5,
+             alpha = 0.75,
+             show.legend = FALSE) +
   labs(x = "Petal width", y = "Petal length")
 
 iris_plot

@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Chris Hamm" />
 
-<meta name="date" content="2020-01-12" />
+<meta name="date" content="2020-03-03" />
 
 <title>transition_states()</title>
 
@@ -238,6 +237,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -266,6 +266,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -344,8 +350,20 @@ div.tocify {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="transition_states.html">transition_states</a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    trasition
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="transition_states.html">transition_states</a>
+    </li>
+    <li>
+      <a href="transition_reveal.html">transition_reveal</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="labels.html">Labels &amp; Color</a>
@@ -355,9 +373,6 @@ div.tocify {
 </li>
 <li>
   <a href="transition_time.html">transition_time</a>
-</li>
-<li>
-  <a href="transition_reveal.html">transition_reveal</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -373,7 +388,7 @@ div.tocify {
 
 <h1 class="title toc-ignore"><code>transition_states()</code></h1>
 <h4 class="author">Chris Hamm</h4>
-<h4 class="date">2020-01-12</h4>
+<h4 class="date">2020-03-03</h4>
 
 </div>
 
@@ -400,7 +415,7 @@ iris_anim</code></pre>
 Figure with smooth animation between <code>Iris</code> states
 </p>
 </div>
-<p>If you think that this is a fairly straight forward plot and doens’t seem to contain a lot of information, you are correct. Right now we want to get the individual parts of the plot working and we will add on to it. This way, if something breaks the code, we’ll know exactly where the bug was introduced. Eventually we will want to distinguish <code>Species</code> by color. But adding <code>color = S[ecies</code> to the <code>ggplot</code> call will make the animation choppy, so we’ll do that later and I’ll show you a cleaver way to smooth it out .</p>
+<p>If you think that this is a fairly straight forward plot and doens’t seem to contain a lot of information, you are correct. Right now we want to get the individual parts of the plot working and we will add on to it. This way, if something breaks the code, we’ll know exactly where the bug was introduced. Eventually we will want to distinguish <code>Species</code> by color. But adding <code>color = Species</code> to the <code>ggplot</code> call will make the animation choppy, so we’ll do that later and I’ll show you a cleaver way to smooth it out .</p>
 <div id="arguments" class="section level2">
 <h2>Arguments</h2>
 <p><code>transition_states()</code> takes <strong>four</strong> arguments:</p>
@@ -413,10 +428,12 @@ Figure with smooth animation between <code>Iris</code> states
 <p><code>transition_states(states, transition_length, state_length, wrap = TRUE)</code></p>
 <p>These transitions look a bit slow. We have considerable power to fine-tune the speed of the transitions.</p>
 <pre class="r"><code>iris_anim &lt;-  iris_plot +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1,
-                    wrap = FALSE)
+  transition_states(
+    Species,
+    transition_length = 2,
+    state_length = 1,
+    wrap = FALSE
+  )
 iris_anim</code></pre>
 <div class="figure" style="text-align: center">
 <img src="transition_states_files/figure-html/iris_fineTune-1.gif" alt="2 second transition between states, 1 second pause at each state, wrap = FALSE"  />
@@ -426,10 +443,12 @@ iris_anim</code></pre>
 </div>
 <p>What if we change the code so that <code>wrap = TRUE</code>?</p>
 <pre class="r"><code>iris_anim &lt;-  iris_plot +
-  transition_states(Species,
-                    transition_length = 2, 
-                    state_length = 1,
-                    wrap = TRUE)
+  transition_states(
+    Species,
+    transition_length = 2,
+    state_length = 1,
+    wrap = TRUE
+  )
 iris_anim</code></pre>
 <div class="figure" style="text-align: center">
 <img src="transition_states_files/figure-html/iris_fineTune2-1.gif" alt="2 second transition between states, 1 second pause at each state, wrap = TRUE"  />
@@ -445,7 +464,7 @@ iris_anim</code></pre>
 <h1><code>geom_boxplot()</code></h1>
 <p>Another use of <code>transition_states()</code> but with box plots.</p>
 <p>Start with our static plot using the <code>mtcars</code> data set</p>
-<pre class="r"><code>car_plot &lt;- mtcars %&gt;% 
+<pre class="r"><code>car_plot &lt;- mtcars %&gt;%
   ggplot(aes(x = factor(cyl), y = mpg)) +
   geom_boxplot() +
   labs(y = &quot;MPG&quot;, x = &quot;Cylinders&quot;)
@@ -454,8 +473,8 @@ car_plot</code></pre>
 <p><img src="transition_states_files/figure-html/boxStatic-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Now create the animation:</p>
 <pre class="r"><code>car_plot +
-  transition_states(gear, 
-                    transition_length = 2, 
+  transition_states(gear,
+                    transition_length = 2,
                     state_length = 1)</code></pre>
 <p><img src="transition_states_files/figure-html/boxAnim-1.gif" style="display: block; margin: auto;" /></p>
 <p>See the section on <a href="labels.html"><code>labels</code></a> to learn about adding an informative label to the plot.</p>

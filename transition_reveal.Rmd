@@ -12,7 +12,14 @@ output:
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 6, fig.asp = 0.618, fig.show = "hold", cache = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  fig.width = 6,
+  fig.asp = 0.618,
+  fig.show = "hold",
+  cache = TRUE
+)
 options(dplyr.width = Inf)
 ```
 
@@ -32,19 +39,22 @@ How to create an animated line plot
 ```{r airQuality}
 data(airquality)
 
-airquality %>% 
-  kable() %>% 
-  kable_styling("striped", full_width = FALSE) %>% 
+airquality %>%
+  kable() %>%
+  kable_styling("striped", full_width = FALSE) %>%
   scroll_box(width = "500px", height = "200px")
 ```
 
 
 Set the static plot:
 ```{r airPlot}
-air_plot <- airquality %>% 
-  ggplot(
-    aes(x = Day, y = Temp, group = Month, color = factor(Month))
-  ) +
+air_plot <- airquality %>%
+  ggplot(aes(
+    x = Day,
+    y = Temp,
+    group = Month,
+    color = factor(Month)
+  )) +
   geom_line() +
   scale_color_viridis_d(name = "Month") +
   labs(x = "Day of Month", y = "Temperature") +
@@ -73,20 +83,28 @@ air_plot +
 
 Create the static plot
 ```{r airPoint}
-air_point <- airquality %>% 
-  ggplot(aes(x = Day, y = Temp, group = Month, color = factor(Month))) +
+air_point <- airquality %>%
+  ggplot(aes(
+    x = Day,
+    y = Temp,
+    group = Month,
+    color = factor(Month)
+  )) +
   geom_point() +
   scale_color_viridis_d(name = "Month") +
   labs(x = "Day of Month", y = "Temperature") +
   theme(legend.position = "top")
+
 air_point
 ```
 
 
 ```{r airWake}
-air_point + 
+air_point +
   transition_reveal(Day) +
-  shadow_wake(wake_length = 1, alpha = TRUE, size = TRUE)
+  shadow_wake(wake_length = 1,
+              alpha = TRUE,
+              size = TRUE)
 ```
 
 

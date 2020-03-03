@@ -12,7 +12,14 @@ output:
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 6, fig.asp = 0.618, fig.show = "hold", cache = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  fig.width = 6,
+  fig.asp = 0.618,
+  fig.show = "hold",
+  cache = TRUE
+)
 options(dplyr.width = Inf)
 ```
 
@@ -22,12 +29,15 @@ set.seed(923741)
 
 library("tidyverse")
 library("gganimate")
+```
 
 
 ```{r irisLabs, echo = FALSE}
-iris_plot <- iris %>% 
-  ggplot(aes(x = Petal.Width, y= Petal.Length)) +
-  geom_point(size = 5, alpha = 0.75, show.legend = FALSE) +
+iris_plot <- iris %>%
+  ggplot(aes(x = Petal.Width, y = Petal.Length)) +
+  geom_point(size = 5,
+             alpha = 0.75,
+             show.legend = FALSE) +
   labs(x = "Petal width", y = "Petal length")
 ```
 
@@ -59,7 +69,7 @@ iris_plot <- iris %>%
 ```{r irisEasing, fig.cap = "cubic-in-out easing"}
 irisAnimation <- iris_plot +
   transition_states(Species,
-                    transition_length = 2, 
+                    transition_length = 2,
                     state_length = 1) +
   labs(title = "Iris {closest_state}")
 
